@@ -1,8 +1,21 @@
 const express = require("express");
 const Joi = require("joi");
+const config = require("config");
+
+const logger = require("./logger");
+const helmet = require("helmet");
+const morgan = require("morgan");
 
 const app = express();
 app.use(express.json());
+app.use(helmet());
+
+if(app.get("env") == "development") {
+    app.use(morgan('tiny'));
+    app.use(logger);
+
+    console.log("Logging enabled...");
+}
 
 ////// Temp data
 const parts = [
@@ -73,7 +86,7 @@ app.delete("/api/parts/:id", (req, res) => {
     res.send(part);
 });
 
-const port = process.env.DS_PARTS_BE_PORT || 3000;
+const port = config.get("port");
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 function validatePart(part) {
