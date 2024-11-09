@@ -27,13 +27,6 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let existingManufacturer = await Manufacturer.find({ name: req.body.name });
-
-    if(existingManufacturer.length > 0) {
-        res.status(400).send("Manufacturer with the given name already exists.");
-        return;
-    }
-
     let manufacturer = new Manufacturer({
         name: req.body.name
     });
@@ -54,15 +47,6 @@ router.put("/:id", async (req, res) => {
     if(!manufacturer) {
         res.status(404).send("Manufacturer with given ID not found.");
         return;
-    }
-
-    if(req.body.name != manufacturer.name) {
-        let existingManufacturer = await Manufacturer.find({ name: req.body.name });
-
-        if(existingManufacturer.length > 0) {
-            res.status(400).send("Manufacturer with the given name already exists.");
-            return;
-        }
     }
 
     manufacturer.name = req.body.name;

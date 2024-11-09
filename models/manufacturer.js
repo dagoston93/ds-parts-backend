@@ -7,7 +7,8 @@ const manufacturerSchema = new mongoose.Schema({
         trim: true,
         required: true,
         minlength: 2,
-        maxlength: 150
+        maxlength: 150,
+        unique: true
     }
 });
 

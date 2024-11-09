@@ -32,13 +32,6 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let existingUser = await User.find({ email: req.body.email });
-
-    if(existingUser.length > 0) {
-        res.status(400).send("User with the given e-mail already exists.");
-        return;
-    }
-
     let user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -67,15 +60,6 @@ router.put("/:id", async (req, res) => {
     if(!user) {
         res.status(404).send("User with given ID not found.");
         return;
-    }
-
-    if(req.body.email != user.email) {
-        let existingUser = await User.find({ email: req.body.email });
-
-        if(existingUser.length > 0) {
-            res.status(400).send("User with the given e-mail already exists.");
-            return;
-        }
     }
 
     user.name = req.body.name;

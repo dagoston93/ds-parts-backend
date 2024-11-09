@@ -9,7 +9,8 @@ const packageSchema = new mongoose.Schema({
         trim: true,
         required: true,
         minlength: 2,
-        maxlength: 50
+        maxlength: 50,
+        unique: true
     },
     type: {
         type: String,

@@ -31,13 +31,6 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let existingPackage = await Package.find({ name: req.body.name });
-
-    if(existingPackage.length > 0) {
-        res.status(400).send("Package with the given name already exists.");
-        return;
-    }
-
     let package = new Package({
         name: req.body.name,
         type: req.body.type
@@ -59,15 +52,6 @@ router.put("/:id", async (req, res) => {
     if(!package) {
         res.status(404).send("Package with given ID not found.");
         return;
-    }
-
-    if(req.body.name != package.name) {
-        let existingPackage = await Package.find({ name: req.body.name });
-
-        if(existingPackage.length > 0) {
-            res.status(400).send("Package with the given name already exists.");
-            return;
-        }
     }
 
     package.name = req.body.name;

@@ -27,13 +27,6 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let existingGroup = await Group.find({ name: req.body.name });
-
-    if(existingGroup.length > 0) {
-        res.status(400).send("Group with the given name already exists.");
-        return;
-    }
-
     let group = new Group({
         name: req.body.name,
         canModifyParts: req.body.canModifyParts,
@@ -58,15 +51,6 @@ router.put("/:id", async (req, res) => {
     if(!group) {
         res.status(404).send("Group with given ID not found.");
         return;
-    }
-
-    if(req.body.name != group.name) {
-        let existingGroup = await Group.find({ name: req.body.name });
-
-        if(existingGroup.length > 0) {
-            res.status(400).send("Group with the given name already exists.");
-            return;
-        }
     }
 
     group.name = req.body.name;
