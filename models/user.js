@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const { isEmail } = require("validator");
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -13,6 +14,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
         required: true,
+        validate: {
+            validator: isEmail,
+            messsage: "Invalid e-mail address."
+        }
     },
     password: {
         type: String,
@@ -29,7 +34,13 @@ const User = mongoose.model("User", userSchema);
 function validate(user) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(100).required(),
-        email: Joi.string().required(),
+        email: Joi.custom((value, helper) => {
+            if(!isEmail(value)) {
+                return helper.error("any.invalid");
+            }
+
+            return value;
+        }).required(),
         password: Joi.string().required(),
         group: Joi.objectId().required()
     });
