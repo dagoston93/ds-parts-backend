@@ -4,12 +4,18 @@ const { Category, validate } = require("../models/category");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const categories = await Category.find();
+    const categories = await Category
+        .find()
+        .populate("createdBy", "name email")
+        .populate("parent", "name");
     res.send(categories);
 });
 
 router.get("/:id", async (req, res) => {
-    const category = await Category.findById(req.params.id);
+    const category = await Category
+        .findById(req.params.id)
+        .populate("createdBy", "name email")
+        .populate("parent", "name");
 
     if(!category) {
         res.status(404).send("Category with given ID not found.");
@@ -20,7 +26,10 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/sub/:id", async (req, res) => {
-    const category = await Category.findById(req.params.id);
+    const category = await Category
+        .findById(req.params.id)
+        .populate("createdBy", "name email")
+        .populate("parent", "name");;
 
     if(!category) {
         res.status(404).send("Category with given ID not found.");
@@ -50,12 +59,17 @@ router.post("/", async (req, res) => {
 
     let category = new Category({
         name: req.body.name,
-        createdOn: req.body.createdOn,
         createdBy:  req.body.createdBy,
         parent: req.body.parent
     });
 
-    category = await category.save();
+    category.save();
+
+    category = await Category
+        .findById(category._id)
+        .populate("createdBy", "name email")
+        .populate("parent", "name");
+
     res.send(category);
 });
 
@@ -75,16 +89,17 @@ router.put("/:id", async (req, res) => {
         }
     }
 
-    const category = await Category.findByIdAndUpdate(
-        req.params.id,
-        {
-            name: req.body.name,
-            createdOn: req.body.createdOn,
-            createdBy:  req.body.createdBy,
-            parent: req.body.parent
-        },
-        { new: true }
-    );
+    const category = await Category
+        .findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                createdBy:  req.body.createdBy,
+                parent: req.body.parent
+            },
+            { new: true })
+        .populate("createdBy", "name email")
+        .populate("parent", "name");
 
     if(!category) {
         res.status(404).send("Category with given ID not found.");

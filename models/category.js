@@ -9,16 +9,13 @@ const categorySchema = new mongoose.Schema({
         minlength: 2,
         maxlength: 255
     },
-    createdOn: {
-        type: Date, 
-        required: true
-    },
     createdBy: {
-        type: String/*mongoose.Schema.Types.ObjectId*/,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
     parent: {
-        type: String/*mongoose.Schema.Types.ObjectId*/,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category"
     }
 });
 
@@ -27,9 +24,8 @@ const Category = mongoose.model("Category", categorySchema);
 function validate(category) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(255).required(),
-        createdOn: Joi.number().required(),
-        createdBy: Joi.string().required(),
-        parent: Joi.string()
+        createdBy: Joi.objectId(),
+        parent: Joi.objectId()
     });
 
     return schema.validate(category);

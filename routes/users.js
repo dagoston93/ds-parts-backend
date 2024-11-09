@@ -5,12 +5,17 @@ const { User, validate } = require("../models/user");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const users = await User.find();
+    const users = await User
+        .find()
+        .populate("group");
+
     res.send(users);
 });
 
 router.get("/:id", async (req, res) => {
-    const user = await User.findById(req.params.id);
+    const user = await User
+        .findById(req.params.id)
+        .populate("group");
 
     if(!user) {
         res.status(404).send("User with given ID not found.");
@@ -41,7 +46,12 @@ router.post("/", async (req, res) => {
         group: req.body.group
     });
 
-    user = await user.save();
+    user.save();
+
+    user = await User
+        .findById(user._id)
+        .populate("group");
+
     res.send(user);
 });
 
@@ -70,10 +80,14 @@ router.put("/:id", async (req, res) => {
 
     user.name = req.body.name;
     user.email = req.body.email;
-    user.password = req.body.email;
+    user.password = req.body.password;
     user.group = req.body.group;
 
-    user = await user.save();
+    await user.save();
+    user = await User
+        .findById(user._id)
+        .populate("group");
+
     res.send(user);
 });
 

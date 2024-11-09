@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     group: {
-        type: String/*mongoose.Schema.Types.ObjectId*/,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Group"
     }
 });
 
@@ -31,7 +31,7 @@ function validate(user) {
         name: Joi.string().min(2).max(100).required(),
         email: Joi.string().required(),
         password: Joi.string().required(),
-        group: Joi.string().required()
+        group: Joi.objectId().required()
     });
 
     return schema.validate(user);

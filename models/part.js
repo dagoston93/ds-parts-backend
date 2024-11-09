@@ -10,12 +10,12 @@ const partSchema = new mongoose.Schema({
         maxlength: 255
     },
     manufacturer: {
-        type: String/*mongoose.Schema.Types.ObjectId*/,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Manufacturer"
     },
     package: {
-        type: String/*mongoose.Schema.Types.ObjectId*/,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Package"
     },
     price: {
         type: Number,
@@ -25,16 +25,13 @@ const partSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    createdOn: {
-        type: Date, 
-        required: true
-    },
     createdBy: {
-        type: String/*mongoose.Schema.Types.ObjectId*/,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
     category: {
-        type: String/*mongoose.Schema.Types.ObjectId*/
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category"
     }
 });
 
@@ -43,13 +40,12 @@ const Part = mongoose.model("Part", partSchema);
 function validate(part) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(255).required(),
-        manufacturer: Joi.string().required(),
-        package: Joi.string().required(),
+        manufacturer: Joi.objectId(),
+        package: Joi.objectId(),
         price: Joi.number().greater(0).required(),
         count: Joi.number().min(0).required(),
-        createdOn: Joi.number().required(),
-        createdBy: Joi.string().required(),
-        category: Joi.string()
+        createdBy: Joi.string(),
+        category: Joi.objectId()
     });
 
     return schema.validate(part);
