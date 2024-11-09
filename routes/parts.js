@@ -1,4 +1,5 @@
 const express = require("express");
+const lodash = require("lodash");
 
 const { Part, validate } = require("../models/part");
 
@@ -37,15 +38,16 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let part = new Part({
-        name: req.body.name,
-        manufacturer: req.body.manufacturer,
-        package: req.body.package,
-        price: req.body.price,
-        count: req.body.count,
-        createdBy:  req.body.createdBy,
-        category: req.body.category
-    });
+    let part = new Part(
+        lodash.pick(req.body, [
+            "name",
+            "manufacturer",
+            "package",
+            "price",
+            "count",
+            "createdBy",
+            "category"
+    ]));
 
     part.save();
 
@@ -69,15 +71,14 @@ router.put("/:id", async (req, res) => {
     const part = await Part
         .findByIdAndUpdate(
             req.params.id,
-            {
-                name: req.body.name,
-                manufacturer: req.body.manufacturer,
-                package: req.body.package,
-                price: req.body.price,
-                count: req.body.count,
-                createdBy:  req.body.createdBy,
-                category: req.body.category
-            },
+            lodash.pick(req.body, [
+                "name",
+                "manufacturer",
+                "package",
+                "price",
+                "count",
+                "createdBy",
+                "category"]),
             { new: true })
         .findById(part._id)
         .populate("manufacturer")

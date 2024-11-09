@@ -1,4 +1,5 @@
 const express = require("express");
+const lodash = require("lodash");
 
 const { Group, validate } = require("../models/group");
 
@@ -27,13 +28,12 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let group = new Group({
-        name: req.body.name,
-        canModifyParts: req.body.canModifyParts,
-        canDeleteParts: req.body.canDeleteParts,
-        canModifyUsers: req.body.canModifyUsers,
-        canDeleteUsers: req.body.canDeleteUsers
-    });
+    let group = new Group(lodash.pick(req.body, [
+        "name",
+        "canModifyParts",
+        "canDeleteParts",
+        "canModifyUsers",
+        "canDeleteUsers"]));
 
     group = await group.save();
     res.send(group);
@@ -53,11 +53,15 @@ router.put("/:id", async (req, res) => {
         return;
     }
 
-    group.name = req.body.name;
-    group.canModifyParts = req.body.canModifyParts;
-    group.canDeleteParts = req.body.canDeleteParts;
-    group.canModifyUsers = req.body.canModifyUsers;
-    group.canDeleteUsers = req.body.canDeleteUsers;
+    Object.assign(
+        group,
+        lodash.pick(req.body, [
+            "name",
+            "canModifyParts",
+            "canDeleteParts",
+            "canModifyUsers",
+            "canDeleteUsers"
+    ]));
 
     group = await group.save();
     res.send(group);

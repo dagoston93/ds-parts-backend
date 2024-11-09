@@ -1,4 +1,5 @@
 const express = require("express");
+const lodash = require("lodash");
 
 const { Package, validate, packageTypes } = require("../models/package");
 
@@ -31,10 +32,7 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let package = new Package({
-        name: req.body.name,
-        type: req.body.type
-    });
+    let package = new Package(lodash.pick(req.body, ["name", "type"]));
 
     package = await package.save();
     res.send(package);
@@ -54,8 +52,7 @@ router.put("/:id", async (req, res) => {
         return;
     }
 
-    package.name = req.body.name;
-    package.type = req.body.type;
+    Object.assign(package, lodash.pick(req.body, ["name", "type"]));
 
     package = await package.save();
     res.send(package);

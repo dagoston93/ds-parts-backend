@@ -1,4 +1,5 @@
 const express = require("express");
+const lodash = require("lodash");
 
 const { User, validate } = require("../models/user");
 
@@ -32,12 +33,7 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password:  req.body.password,
-        group: req.body.group
-    });
+    let user = new User(lodash.pick(req.body, ["name", "email", "password", "group"]));
 
     user.save();
 
@@ -62,10 +58,7 @@ router.put("/:id", async (req, res) => {
         return;
     }
 
-    user.name = req.body.name;
-    user.email = req.body.email;
-    user.password = req.body.password;
-    user.group = req.body.group;
+    Object.assign(user, lodash.pick(req.body, ["name", "email", "password", "group"]));
 
     await user.save();
     user = await User

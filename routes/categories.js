@@ -1,4 +1,5 @@
 const express = require("express");
+const lodash = require("lodash");
 
 const { Category, validate } = require("../models/category");
 const router = express.Router();
@@ -57,11 +58,7 @@ router.post("/", async (req, res) => {
         }
     }
 
-    let category = new Category({
-        name: req.body.name,
-        createdBy:  req.body.createdBy,
-        parent: req.body.parent
-    });
+    let category = new Category(lodash.pick(req.body, ["name", "createdBy", "parent"]));
 
     category.save();
 
@@ -92,11 +89,7 @@ router.put("/:id", async (req, res) => {
     const category = await Category
         .findByIdAndUpdate(
             req.params.id,
-            {
-                name: req.body.name,
-                createdBy:  req.body.createdBy,
-                parent: req.body.parent
-            },
+            lodash.pick(req.body, ["name", "createdBy", "parent"]),
             { new: true })
         .populate("createdBy", "name email")
         .populate("parent", "name");
