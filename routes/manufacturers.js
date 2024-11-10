@@ -1,15 +1,16 @@
 const express = require("express");
-
+const auth = require("../middleware/auth");
+const { canModifyParts, canDeleteParts } = require("../middleware/userRights");
 const { Manufacturer, validate, findByName } = require("../models/manufacturer");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", auth, async (req, res) => {
     const manufacturer = await Manufacturer.find();
     res.send(manufacturer);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req, res) => {
     const manufacturer = await Manufacturer.findById(req.params.id);
 
     if(!manufacturer) {
@@ -20,7 +21,7 @@ router.get("/:id", async (req, res) => {
     res.send(manufacturer);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", [auth, canModifyParts], async (req, res) => {
     const { error } = validate(req.body);
     if(error) {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
@@ -41,7 +42,7 @@ router.post("/", async (req, res) => {
     res.send(manufacturer);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", [auth, canModifyParts], async (req, res) => {
     const {error} = validate(req.body);
     if(error) {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
@@ -68,7 +69,7 @@ router.put("/:id", async (req, res) => {
     res.send(manufacturer);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, canDeleteParts], async (req, res) => {
     const manufacturer = await Manufacturer.findByIdAndDelete(req.params.id);
 
     if(!manufacturer) {
