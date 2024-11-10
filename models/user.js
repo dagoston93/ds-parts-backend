@@ -29,10 +29,23 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    group: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Group",
-        autopopulate: true
+    rights: {
+        canModifyParts: {
+            type: Boolean,
+            required: true
+        },
+        canDeleteParts: {
+            type: Boolean,
+            required: true
+        },
+        canModifyUsers: {
+            type: Boolean,
+            required: true
+        },
+        canDeleteUsers: {
+            type: Boolean,
+            required: true
+        }
     }
 });
 
@@ -43,10 +56,10 @@ userSchema.methods.generateAuthToken = function() {
         lodash.pick(this, [
             "_id",
             "name",
-            "group.canModifyParts",
-            "group.canDeleteParts",
-            "group.canModifyUsers",
-            "group.canDeleteUsers"]),
+            "rights.canModifyParts",
+            "rights.canDeleteParts",
+            "rights.canModifyUsers",
+            "rights.canDeleteUsers"]),
         config.get("jwtPrivateKey"));
 
     return token;
@@ -75,7 +88,12 @@ function validate(user) {
             return value;
         }).required(),
         password: passwordComplexity(passwordComplexityOptions),
-        group: Joi.objectId().required()
+        rights: {
+            canModifyParts : Joi.bool().required(),
+            canDeleteParts : Joi.bool().required(),
+            canModifyUsers : Joi.bool().required(),
+            canDeleteUsers : Joi.bool().required()
+        }
     });
 
     return schema.validate(user);

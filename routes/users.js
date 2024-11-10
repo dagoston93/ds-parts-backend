@@ -30,12 +30,12 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let user = new User(lodash.pick(req.body, ["name", "email", "group"]));
+    let user = new User(lodash.pick(req.body, ["name", "email", "rights"]));
     let salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.password, salt);
     user.save();
 
-    res.send(user);
+    res.send(lodash.pick(user, ["name", "email", "rights"]));
 });
 
 router.delete("/:id", async (req, res) => {

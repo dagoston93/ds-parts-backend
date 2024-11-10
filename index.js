@@ -12,7 +12,6 @@ const morgan = require("morgan");
 const parts = require("./routes/parts");
 const categories = require("./routes/categories");
 const users = require("./routes/users");
-const groups = require("./routes/groups");
 const manufacturers = require("./routes/manufacturers");
 const packages = require("./routes/packages");
 const auth = require("./routes/auth");
@@ -38,7 +37,6 @@ if(app.get("env") == "development") {
 app.use("/api/parts", parts);
 app.use("/api/categories", categories);
 app.use("/api/users", users);
-app.use("/api/groups", groups);
 app.use("/api/manufacturers", manufacturers);
 app.use("/api/packages", packages);
 app.use("/api/auth", auth);
