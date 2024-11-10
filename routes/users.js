@@ -46,30 +46,6 @@ router.post("/", async (req, res) => {
     res.send(user);
 });
 
-router.put("/:id", async (req, res) => {
-    const {error} = validate(req.body);
-    if(error) {
-        res.status(400).send("Bad Request!\n" + error.details[0].message);
-        return;
-    }
-
-    let user = await User.findById(req.params.id);
-
-    if(!user) {
-        res.status(404).send("User with given ID not found.");
-        return;
-    }
-
-    Object.assign(user, lodash.pick(req.body, ["name", "email", "password", "group"]));
-
-    await user.save();
-    user = await User
-        .findById(user._id)
-        .populate("group");
-
-    res.send(user);
-});
-
 router.delete("/:id", async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
 
