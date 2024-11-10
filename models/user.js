@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
+const lodash = require("lodash");
 const passwordComplexity = require("joi-password-complexity");
+const config = require("config");
 const { isEmail } = require("validator");
 
 const userSchema = new mongoose.Schema({
@@ -30,6 +33,16 @@ const userSchema = new mongoose.Schema({
         ref: "Group"
     }
 });
+
+userSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign(
+        lodash.pick(this, [
+            "_id",
+            "name"]),
+        config.get("jwtPrivateKey"));
+
+    return token;
+}
 
 const User = mongoose.model("User", userSchema);
 

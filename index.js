@@ -15,8 +15,14 @@ const users = require("./routes/users");
 const groups = require("./routes/groups");
 const manufacturers = require("./routes/manufacturers");
 const packages = require("./routes/packages");
+const auth = require("./routes/auth");
 
 const logger = require("./middleware/logger");
+
+if(!config.get("jwtPrivateKey")) {
+    console.error("FATAL ERROR: jwtPrivateKey is NOT set.");
+    process.exit(1);
+}
 
 const app = express();
 app.use(helmet());
@@ -35,6 +41,7 @@ app.use("/api/users", users);
 app.use("/api/groups", groups);
 app.use("/api/manufacturers", manufacturers);
 app.use("/api/packages", packages);
+app.use("/api/auth", auth);
 
 const dbConnString = config.get("dbConnString");
 

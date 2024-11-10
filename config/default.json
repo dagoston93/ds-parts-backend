@@ -1,5 +1,6 @@
 {
     "name": "DS Parts",
     "port": 3000,
-    "dbConnString": ""
+    "dbConnString": "",
+    "jwtPrivateKey": ""
 }
