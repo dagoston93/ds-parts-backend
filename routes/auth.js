@@ -1,5 +1,4 @@
 const express = require("express");
-const lodash = require("lodash");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const lodash = require("lodash");
 
 const packageTypes = ["SMD", "THT"];
 
@@ -30,6 +31,16 @@ function validate(package) {
     return schema.validate(package);
 }
 
+async function findByName(name) {
+    return await Package.findOne({ name: name });
+}
+
+function pickProperties(obj) {
+    return lodash.pick(obj, ["_id", "name", "type"]);
+}
+
 module.exports.Package = Package;
 module.exports.validate = validate;
 module.exports.packageTypes = packageTypes;
+module.exports.findByName = findByName;
+module.exports.pickProperties = pickProperties;

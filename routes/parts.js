@@ -1,7 +1,6 @@
 const express = require("express");
-const lodash = require("lodash");
 
-const { Part, validate } = require("../models/part");
+const { Part, validate, pickProperties } = require("../models/part");
 
 const router = express.Router();
 
@@ -28,17 +27,7 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let part = new Part(
-        lodash.pick(req.body, [
-            "name",
-            "manufacturer",
-            "package",
-            "price",
-            "count",
-            "createdBy",
-            "category"
-    ]));
-
+    let part = new Part(pickProperties(req.body));
     part.save();
 
     res.send(part);
@@ -54,15 +43,9 @@ router.put("/:id", async (req, res) => {
     const part = await Part
         .findByIdAndUpdate(
             req.params.id,
-            lodash.pick(req.body, [
-                "name",
-                "manufacturer",
-                "package",
-                "price",
-                "count",
-                "createdBy",
-                "category"]),
-            { new: true });
+            pickProperties(req.body),
+            { new: true }
+        );
 
     if(!part) {
         res.status(404).send("Part with given ID not found.");

@@ -1,8 +1,6 @@
 const express = require("express");
-const lodash = require("lodash");
 const bcrypt = require("bcrypt");
-
-const { User, validate } = require("../models/user");
+const { User, validate, findByEmail, pickProperties } = require("../models/user");
 
 const router = express.Router();
 
@@ -29,13 +27,19 @@ router.post("/", async (req, res) => {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
         return;
     }
+    
+    let user = await findByEmail(req.body.email);
+    if(user) {
+        res.status(400).send("User with the give e-mail already exists.");
+        return;
+    }
 
-    let user = new User(lodash.pick(req.body, ["name", "email", "rights"]));
+    user = new User(pickProperties(req.body));
     let salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.password, salt);
     user.save();
 
-    res.send(lodash.pick(user, ["name", "email", "rights"]));
+    res.send(pickProperties(user));
 });
 
 router.delete("/:id", async (req, res) => {
@@ -46,7 +50,7 @@ router.delete("/:id", async (req, res) => {
         return;
     }
 
-    res.send(user);
+    res.send(pickProperties(user));
 });
 
 module.exports = router;

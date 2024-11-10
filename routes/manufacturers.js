@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { Manufacturer, validate } = require("../models/manufacturer");
+const { Manufacturer, validate, findByName } = require("../models/manufacturer");
 
 const router = express.Router();
 
@@ -27,7 +27,13 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let manufacturer = new Manufacturer({
+    let manufacturer = await findByName(req.body.name);
+    if(manufacturer) {
+        res.status(400).send("Manufacturer already exists.");
+        return;
+    }
+
+    manufacturer = new Manufacturer({
         name: req.body.name
     });
 
@@ -43,10 +49,17 @@ router.put("/:id", async (req, res) => {
     }
 
     let manufacturer = await Manufacturer.findById(req.params.id);
-
     if(!manufacturer) {
         res.status(404).send("Manufacturer with given ID not found.");
         return;
+    }
+
+    if(manufacturer.name != req.body.name) {
+        let existingManufacturer = await findByName(req.body.name);
+        if(existingManufacturer) {
+            res.status(400).send("Manufacturer already exists.");
+            return;
+        }
     }
 
     manufacturer.name = req.body.name;

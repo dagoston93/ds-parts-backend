@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const lodash = require("lodash");
 const autopopulate = require("mongoose-autopopulate");
 
 const partSchema = new mongoose.Schema({
@@ -57,5 +58,20 @@ function validate(part) {
     return schema.validate(part);
 }
 
+function pickProperties(obj) {
+    return lodash.pick(
+        obj,
+        [
+            "name",
+            "manufacturer",
+            "package",
+            "price",
+            "count",
+            "createdBy",
+            "category"
+        ]);
+}
+
 module.exports.Part = Part;
 module.exports.validate = validate;
+module.exports.pickProperties = pickProperties;

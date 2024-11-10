@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const lodash = require("lodash");
 const autopopulate = require("mongoose-autopopulate");
 
 const categorySchema = new mongoose.Schema({
@@ -36,5 +37,10 @@ function validate(category) {
     return schema.validate(category);
 }
 
+function pickProperties(obj) {
+    return lodash.pick(obj, ["name", "createdBy", "parent"]);
+}
+
 module.exports.Category = Category;
 module.exports.validate = validate;
+module.exports.pickProperties = pickProperties;

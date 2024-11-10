@@ -22,5 +22,10 @@ function validate(manufacturer) {
     return schema.validate(manufacturer);
 }
 
+async function findByName(name) {
+    return await Manufacturer.findOne({ name: name });
+}
+
 module.exports.Manufacturer = Manufacturer;
 module.exports.validate = validate;
+module.exports.findByName = findByName;

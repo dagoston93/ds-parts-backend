@@ -99,5 +99,15 @@ function validate(user) {
     return schema.validate(user);
 }
 
+async function findByEmail(email) {
+    return await User.findOne({ email: email });
+}
+
+function pickProperties(obj) {
+    return lodash.pick(obj, ["_id", "name", "email", "rights"]);
+}
+
 module.exports.User = User;
 module.exports.validate = validate;
+module.exports.findByEmail = findByEmail;
+module.exports.pickProperties = pickProperties;

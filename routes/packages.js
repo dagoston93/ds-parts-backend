@@ -1,7 +1,6 @@
 const express = require("express");
-const lodash = require("lodash");
 
-const { Package, validate, packageTypes } = require("../models/package");
+const { Package, validate, packageTypes, findByName, pickProperties } = require("../models/package");
 
 const router = express.Router();
 
@@ -31,10 +30,16 @@ router.post("/", async (req, res) => {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
         return;
     }
+    
+    let package = await findByName(req.body.name);
+    if(package) {
+        res.status(400).send("Package already exsits.");
+        return;
+    }
 
-    let package = new Package(lodash.pick(req.body, ["name", "type"]));
-
+    package = new Package(pickProperties(req.body));
     package = await package.save();
+
     res.send(package);
 });
 
@@ -52,7 +57,15 @@ router.put("/:id", async (req, res) => {
         return;
     }
 
-    Object.assign(package, lodash.pick(req.body, ["name", "type"]));
+    if(package.name != req.body.name) {
+        let existingPackage = await findByName(req.body.name);
+        if(existingPackage) {
+            res.status(400).send("Package already exsits.");
+            return;
+        }       
+    }
+
+    Object.assign(package, pickProperties(req.body));
 
     package = await package.save();
     res.send(package);
