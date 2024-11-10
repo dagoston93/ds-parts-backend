@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const autopopulate = require("mongoose-autopopulate");
 
 const partSchema = new mongoose.Schema({
     name: { 
@@ -11,11 +12,13 @@ const partSchema = new mongoose.Schema({
     },
     manufacturer: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Manufacturer"
+        ref: "Manufacturer",
+        autopopulate: true
     },
     package: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Package"
+        ref: "Package",
+        autopopulate: true
     },
     price: {
         type: Number,
@@ -27,14 +30,17 @@ const partSchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        autopopulate: { select: "name email" }
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category"
+        ref: "Category",
+        autopopulate: { select: "name" }
     }
 });
 
+partSchema.plugin(autopopulate);
 const Part = mongoose.model("Part", partSchema);
 
 function validate(part) {

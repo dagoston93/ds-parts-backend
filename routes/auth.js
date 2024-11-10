@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    let user = await User.findOne({ email: req.body.email }).populate("group");
+    let user = await User.findOne({ email: req.body.email });
     if(!user) {
         res.status(400).send("Invalid e-mail address or password!\n");
         return;

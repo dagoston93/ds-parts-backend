@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const lodash = require("lodash");
 const passwordComplexity = require("joi-password-complexity");
 const config = require("config");
+const autopopulate = require("mongoose-autopopulate");
 const { isEmail } = require("validator");
 
 const userSchema = new mongoose.Schema({
@@ -30,15 +31,22 @@ const userSchema = new mongoose.Schema({
     },
     group: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Group"
+        ref: "Group",
+        autopopulate: true
     }
 });
+
+userSchema.plugin(autopopulate);
 
 userSchema.methods.generateAuthToken = function() {
     const token = jwt.sign(
         lodash.pick(this, [
             "_id",
-            "name"]),
+            "name",
+            "group.canModifyParts",
+            "group.canDeleteParts",
+            "group.canModifyUsers",
+            "group.canDeleteUsers"]),
         config.get("jwtPrivateKey"));
 
     return token;

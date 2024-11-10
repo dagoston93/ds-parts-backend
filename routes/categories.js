@@ -5,18 +5,12 @@ const { Category, validate } = require("../models/category");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const categories = await Category
-        .find()
-        .populate("createdBy", "name email")
-        .populate("parent", "name");
+    const categories = await Category.find();
     res.send(categories);
 });
 
 router.get("/:id", async (req, res) => {
-    const category = await Category
-        .findById(req.params.id)
-        .populate("createdBy", "name email")
-        .populate("parent", "name");
+    const category = await Category.findById(req.params.id);
 
     if(!category) {
         res.status(404).send("Category with given ID not found.");
@@ -27,10 +21,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.get("/sub/:id", async (req, res) => {
-    const category = await Category
-        .findById(req.params.id)
-        .populate("createdBy", "name email")
-        .populate("parent", "name");;
+    const category = await Category.findById(req.params.id);
 
     if(!category) {
         res.status(404).send("Category with given ID not found.");
@@ -59,13 +50,7 @@ router.post("/", async (req, res) => {
     }
 
     let category = new Category(lodash.pick(req.body, ["name", "createdBy", "parent"]));
-
     category.save();
-
-    category = await Category
-        .findById(category._id)
-        .populate("createdBy", "name email")
-        .populate("parent", "name");
 
     res.send(category);
 });
@@ -86,13 +71,10 @@ router.put("/:id", async (req, res) => {
         }
     }
 
-    const category = await Category
-        .findByIdAndUpdate(
-            req.params.id,
-            lodash.pick(req.body, ["name", "createdBy", "parent"]),
-            { new: true })
-        .populate("createdBy", "name email")
-        .populate("parent", "name");
+    const category = await Category.findByIdAndUpdate(
+        req.params.id,
+        lodash.pick(req.body, ["name", "createdBy", "parent"]),
+        { new: true });
 
     if(!category) {
         res.status(404).send("Category with given ID not found.");

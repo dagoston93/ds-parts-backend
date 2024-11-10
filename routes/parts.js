@@ -6,22 +6,12 @@ const { Part, validate } = require("../models/part");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const parts = await Part
-        .find()
-        .populate("manufacturer")
-        .populate("package")
-        .populate("createdBy", "name email")
-        .populate("category", "name");
+    const parts = await Part.find();
     res.send(parts);
 });
 
 router.get("/:id", async (req, res) => {
-    const part = await Part
-        .findById(req.params.id)
-        .populate("manufacturer")
-        .populate("package")
-        .populate("createdBy", "name email")
-        .populate("category", "name");
+    const part = await Part.findById(req.params.id);
 
     if(!part) {
         res.status(404).send("Part with given ID not found.");
@@ -51,13 +41,6 @@ router.post("/", async (req, res) => {
 
     part.save();
 
-    part = await Part
-        .findById(part._id)
-        .populate("manufacturer")
-        .populate("package")
-        .populate("createdBy", "name email")
-        .populate("category", "name");
-
     res.send(part);
 });
 
@@ -79,12 +62,7 @@ router.put("/:id", async (req, res) => {
                 "count",
                 "createdBy",
                 "category"]),
-            { new: true })
-        .findById(part._id)
-        .populate("manufacturer")
-        .populate("package")
-        .populate("createdBy", "name email")
-        .populate("category", "name");
+            { new: true });
 
     if(!part) {
         res.status(404).send("Part with given ID not found.");

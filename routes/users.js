@@ -7,17 +7,13 @@ const { User, validate } = require("../models/user");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const users = await User
-        .find()
-        .populate("group");
+    const users = await User.find();
 
     res.send(users);
 });
 
 router.get("/:id", async (req, res) => {
-    const user = await User
-        .findById(req.params.id)
-        .populate("group");
+    const user = await User.findById(req.params.id);
 
     if(!user) {
         res.status(404).send("User with given ID not found.");
@@ -38,10 +34,6 @@ router.post("/", async (req, res) => {
     let salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.password, salt);
     user.save();
-
-    user = await User
-        .findById(user._id)
-        .populate("group");
 
     res.send(user);
 });
