@@ -1,4 +1,6 @@
 const express = require("express");
+require("express-async-errors");
+const error = require("./middleware/error");
 const mongoose = require("mongoose");
 
 const Joi = require("joi");
@@ -40,6 +42,8 @@ app.use("/api/users", users);
 app.use("/api/manufacturers", manufacturers);
 app.use("/api/packages", packages);
 app.use("/api/auth", auth);
+
+app.use(error);
 
 const dbConnString = config.get("dbConnString");
 
