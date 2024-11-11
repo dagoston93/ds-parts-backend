@@ -17,8 +17,10 @@
     "joi": "^17.13.3",
     "joi-objectid": "^4.0.2",
     "joi-password-complexity": "^5.2.0",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mongoose": "^8.8.1",
+    "mongoose-autopopulate": "^1.1.0",
     "morgan": "^1.10.0",
     "validator": "^13.12.0"
   }
