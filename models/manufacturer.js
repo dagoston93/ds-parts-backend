@@ -36,7 +36,17 @@ async function findByName(name) {
     return await Manufacturer.findOne({ name: name });
 }
 
+async function exists(id) {
+    const manufacturer = await Manufacturer.findOne({ _id: id });
+    if(manufacturer) {
+        return true;
+    }
+
+    return false;
+}
+
 module.exports.Manufacturer = Manufacturer;
 module.exports.validate = validate;
 module.exports.findByName = findByName;
 module.exports.pickProperties = pickProperties;
+module.exports.exists = exists;

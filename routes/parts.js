@@ -2,6 +2,9 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const { canModifyParts, canDeleteParts } = require("../middleware/userRights");
 const { Part, validate, pickProperties } = require("../models/part");
+const { exists: manufacturerExists } = require("../models/manufacturer");
+const { exists: packageExists } = require("../models/package");
+const { exists: categoryExists } = require("../models/category");
 
 const router = express.Router();
 
@@ -28,6 +31,21 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
         return;
     }
 
+    if(req.body.manufacturer && !(await manufacturerExists(req.body.manufacturer))) {
+        res.status(400).send("Manufacturer does not exist.");
+        return;
+    }
+
+    if(req.body.package && !(await packageExists(req.body.package))) {
+        res.status(400).send("Package does not exist.");
+        return;
+    }
+
+    if(req.body.category && !(await categoryExists(req.body.category))) {
+        res.status(400).send("Category does not exist.");
+        return;
+    }
+
     let part = new Part(pickProperties(req.body));
     part.createdBy = req.user._id; 
     part.save();
@@ -39,6 +57,21 @@ router.put("/:id", [auth, canModifyParts], async (req, res) => {
     const {error} = validate(req.body);
     if(error) {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
+        return;
+    }
+
+    if(req.body.manufacturer && !(await manufacturerExists(req.body.manufacturer))) {
+        res.status(400).send("Manufacturer does not exist.");
+        return;
+    }
+
+    if(req.body.package && !(await packageExists(req.body.package))) {
+        res.status(400).send("Package does not exist.");
+        return;
+    }
+
+    if(req.body.category && !(await categoryExists(req.body.category))) {
+        res.status(400).send("Category does not exist.");
         return;
     }
 

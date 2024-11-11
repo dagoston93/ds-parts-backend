@@ -44,8 +44,18 @@ function pickProperties(obj) {
     return lodash.pick(obj, ["name", "type"]);
 }
 
+async function exists(id) {
+    const package = await Package.findOne({ _id: id });
+    if(package) {
+        return true;
+    }
+
+    return false;
+}
+
 module.exports.Package = Package;
 module.exports.validate = validate;
 module.exports.packageTypes = packageTypes;
 module.exports.findByName = findByName;
 module.exports.pickProperties = pickProperties;
+module.exports.exists = exists;

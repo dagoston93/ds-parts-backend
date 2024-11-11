@@ -40,6 +40,16 @@ function pickProperties(obj) {
     return lodash.pick(obj, ["name", "parent"]);
 }
 
+async function exists(id) {
+    const category = await Category.findOne({ _id: id });
+    if(category) {
+        return true;
+    }
+
+    return false;
+}
+
 module.exports.Category = Category;
 module.exports.validate = validate;
 module.exports.pickProperties = pickProperties;
+module.exports.exists = exists;
