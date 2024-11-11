@@ -1,7 +1,7 @@
 const express = require("express");
 const auth = require("../middleware/auth");
 const { canModifyParts, canDeleteParts } = require("../middleware/userRights");
-const { Manufacturer, validate, findByName } = require("../models/manufacturer");
+const { Manufacturer, validate, pickProperties, findByName } = require("../models/manufacturer");
 
 const router = express.Router();
 
@@ -34,11 +34,11 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
         return;
     }
 
-    manufacturer = new Manufacturer({
-        name: req.body.name
-    });
+    manufacturer = new Manufacturer(pickProperties(req.body));
 
+    manufacturer.createdBy = req.user._id;
     manufacturer = await manufacturer.save();
+
     res.send(manufacturer);
 });
 
@@ -63,7 +63,7 @@ router.put("/:id", [auth, canModifyParts], async (req, res) => {
         }
     }
 
-    manufacturer.name = req.body.name;
+    Object.assign(manufacturer, pickProperties(req.body));
 
     manufacturer = await manufacturer.save();
     res.send(manufacturer);

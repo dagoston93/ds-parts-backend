@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        autopopulate: { select: "name email" }
+    },
     rights: {
         canModifyParts: {
             type: Boolean,
@@ -104,7 +109,7 @@ async function findByEmail(email) {
 }
 
 function pickProperties(obj) {
-    return lodash.pick(obj, ["_id", "name", "email", "rights"]);
+    return lodash.pick(obj, ["name", "email", "rights"]);
 }
 
 module.exports.User = User;

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const lodash = require("lodash");
 
 const manufacturerSchema = new mongoose.Schema({
     name: {
@@ -9,6 +10,11 @@ const manufacturerSchema = new mongoose.Schema({
         minlength: 2,
         maxlength: 150,
         unique: true
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        autopopulate: { select: "name email" }
     }
 });
 
@@ -22,6 +28,10 @@ function validate(manufacturer) {
     return schema.validate(manufacturer);
 }
 
+function pickProperties(obj) {
+    return lodash.pick(obj, ["name", "parent"]);
+}
+
 async function findByName(name) {
     return await Manufacturer.findOne({ name: name });
 }
@@ -29,3 +39,4 @@ async function findByName(name) {
 module.exports.Manufacturer = Manufacturer;
 module.exports.validate = validate;
 module.exports.findByName = findByName;
+module.exports.pickProperties = pickProperties;

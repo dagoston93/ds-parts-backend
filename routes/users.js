@@ -39,6 +39,7 @@ router.post("/", [auth, canModifyUsers], async (req, res) => {
     user = new User(pickProperties(req.body));
     let salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.password, salt);
+    user.createdBy = req.user;
     user.save();
 
     res.send(pickProperties(user));

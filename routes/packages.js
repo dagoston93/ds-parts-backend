@@ -39,6 +39,7 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
     }
 
     package = new Package(pickProperties(req.body));
+    package.createdBy = req.user._id;
     package = await package.save();
 
     res.send(package);

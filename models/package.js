@@ -16,6 +16,11 @@ const packageSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: packageTypes
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        autopopulate: { select: "name email" }
     }
 });
 
@@ -36,7 +41,7 @@ async function findByName(name) {
 }
 
 function pickProperties(obj) {
-    return lodash.pick(obj, ["_id", "name", "type"]);
+    return lodash.pick(obj, ["name", "type"]);
 }
 
 module.exports.Package = Package;
