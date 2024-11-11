@@ -51,7 +51,6 @@ function validate(part) {
         package: Joi.objectId(),
         price: Joi.number().greater(0).required(),
         count: Joi.number().min(0).required(),
-        createdBy: Joi.string(),
         category: Joi.objectId()
     });
 
@@ -67,7 +66,6 @@ function pickProperties(obj) {
             "package",
             "price",
             "count",
-            "createdBy",
             "category"
         ]);
 }

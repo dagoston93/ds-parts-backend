@@ -29,6 +29,7 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
     }
 
     let part = new Part(pickProperties(req.body));
+    part.createdBy = req.user._id; 
     part.save();
 
     res.send(part);
