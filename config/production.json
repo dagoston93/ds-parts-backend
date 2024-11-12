@@ -1,3 +1,5 @@
 {
-    "dbConnString": "mongodb://localhost:27017/parts"
+    "dbConnString": "mongodb://localhost:27017/parts",
+    "logLevel": "warn",
+    "mongoLogConnString": "mongodb://localhost:27017/parts-log"
 }

@@ -2,5 +2,8 @@
     "name": "DS Parts",
     "port": 3000,
     "dbConnString": "",
-    "jwtPrivateKey": ""
+    "jwtPrivateKey": "",
+    "logLevel": "error",
+    "logToMongo": true,
+    "mongoLogConnString": ""
 }
