@@ -16,13 +16,13 @@ router.post("/", async (req, res) => {
 
     let user = await User.findOne({ email: req.body.email });
     if(!user) {
-        res.status(400).send("Invalid e-mail address or password!\n");
+        res.status(400).send("Invalid e-mail address or password!");
         return;
     }
 
     const validPassword = await bcrypt.compare(req.body.password, user.password);
     if(!validPassword) {
-        res.status(400).send("Invalid e-mail address or password!\n");
+        res.status(400).send("Invalid e-mail address or password!");
         return;
     }
 
