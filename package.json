@@ -24,6 +24,7 @@
     "mongoose": "^8.8.1",
     "mongoose-autopopulate": "^1.1.0",
     "morgan": "^1.10.0",
+    "nanoid": "^3.3.5",
     "validator": "^13.12.0",
     "winston": "^3.17.0",
     "winston-mongodb": "^6.0.0"

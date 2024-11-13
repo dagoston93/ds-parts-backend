@@ -1,8 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
+const lodash = require("lodash");
 const { canModifyUsers, canDeleteUsers } = require("../middleware/userRights");
-const { User, validate, findByEmail, pickProperties } = require("../models/user");
+const { User, validateUser, validateUserRights, findByEmail, pickUserProperties, pickUserRightsProperties } = require("../models/user");
+const tokenStore = require("../util/inMemoryTokenStore");
 
 const router = express.Router();
 
@@ -24,7 +26,7 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 router.post("/", [auth, canModifyUsers], async (req, res) => {
-    const { error } = validate(req.body);
+    const { error } = validateUser(req.body);
     if(error) {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
         return;
@@ -36,13 +38,38 @@ router.post("/", [auth, canModifyUsers], async (req, res) => {
         return;
     }
 
-    user = new User(pickProperties(req.body));
+    user = new User(pickUserProperties(req.body));
     let salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(req.body.password, salt);
     user.createdBy = req.user;
+    validTokens = [];
     user.save();
 
-    res.send(pickProperties(user));
+    res.send(pickUserProperties(user));
+});
+
+router.put("/rights/:id", [auth, canModifyUsers], async (req, res) => {
+    const { error } = validateUserRights(req.body);
+    if(error) {
+        res.status(400).send("Bad Request!\n" + error.details[0].message);
+        return;
+    }
+    
+    let user = await User.findById(req.params.id);
+    if(!user) {
+        res.status(400).send("User with the given ID does not exist.");
+        return;
+    }
+
+    if(!lodash.isEqual(pickUserRightsProperties(req.body), pickUserRightsProperties(user.rights))) {
+        Object.assign(user.rights, pickUserRightsProperties(req.body));
+        user = await user.save();
+
+        await user.invalidateAllTokens();
+        tokenStore.invalidateAllTokens(user._id);
+    }
+
+    res.send(pickUserProperties(user));
 });
 
 router.delete("/:id", [auth, canDeleteUsers], async (req, res) => {
@@ -53,7 +80,8 @@ router.delete("/:id", [auth, canDeleteUsers], async (req, res) => {
         return;
     }
 
-    res.send(pickProperties(user));
+    tokenStore.removeUser(user._id);
+    res.send(pickUserProperties(user));
 });
 
 module.exports = router;

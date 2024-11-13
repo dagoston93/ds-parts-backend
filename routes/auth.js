@@ -1,7 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
-
+const auth = require("../middleware/auth");
+const tokenStore = require("../util/inMemoryTokenStore");
 const { User } = require("../models/user");
 
 const router = express.Router();
@@ -25,8 +26,21 @@ router.post("/", async (req, res) => {
         return;
     }
 
-    const token = user.generateAuthToken();
+    const token = await user.generateAuthToken();
     res.send(token);
+});
+
+router.post("/logout", auth, async (req, res) => {
+    let user = await User.findById(req.user._id);
+    if(!user) {
+        res.status(400).send("User with given ID not found.");
+        return;
+    }
+
+    await user.invalidateToken(req.tokenId);
+    tokenStore.invalidateToken(req.user._id, req.tokenId);
+
+    res.send(req.user._id);
 });
 
 function validate(user) {

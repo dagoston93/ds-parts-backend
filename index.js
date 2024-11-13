@@ -7,7 +7,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 const config = require("config");
 
 const setupRoutes = require("./startup/routes");
-const setupDb = require("./startup/db");
+const { initDb } = require("./startup/db");
 const initConfig = require("./startup/config");
 const { logger } = require("./util/logger");
 
@@ -16,7 +16,7 @@ initConfig();
 const app = express();
 setupRoutes(app);
 
-setupDb();
+initDb();
 
 const port = config.get("port");
 app.listen(port, () => logger.info(`Listening on port ${port}...`));
