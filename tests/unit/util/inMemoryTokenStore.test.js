@@ -66,49 +66,49 @@ describe("unit - inMemoryTokenStore", () => {
 
             expect(tokenStore).toMatchObject({ "userId1": []});
         });
+    });
 
-        describe("removeUser", () => {
-            it("should not change tokenStore if user not in store", () => {
-                tokenStore["userId1"] = ["token1", "token2"];
-    
-                removeUser("userId2");
-    
-                expect(tokenStore).toMatchObject({ "userId1": ["token1", "token2"]});
-            });
-    
-            it("should invalidate all tokens of user, if request is valid", () => {
-                tokenStore["userId1"] = ["token1", "token2"];
-    
-                removeUser("userId1");
-    
-                expect(tokenStore).toMatchObject({ });
-            });
+    describe("removeUser", () => {
+        it("should not change tokenStore if user not in store", () => {
+            tokenStore["userId1"] = ["token1", "token2"];
+
+            removeUser("userId2");
+
+            expect(tokenStore).toMatchObject({ "userId1": ["token1", "token2"]});
         });
 
-        describe("isTokenValid", () => {
-            it("should return false if user not in store", () => {
-                tokenStore["userId1"] = ["token1", "token2"];
-    
-                const isValid = isTokenValid("userId2", "token1");
-    
-                expect(isValid).toBeFalsy();
-            });
-    
-            it("should return false if user has no valid token with the given ID in store", () => {
-                tokenStore["userId1"] = ["token1", "token2"];
-    
-                const isValid = isTokenValid("userId1", "token3");
-    
-                expect(isValid).toBeFalsy();
-            });
+        it("should invalidate all tokens of user, if request is valid", () => {
+            tokenStore["userId1"] = ["token1", "token2"];
 
-            it("should return true if user has valid token with the given ID", () => {
-                tokenStore["userId1"] = ["token1", "token2"];
-    
-                const isValid = isTokenValid("userId1", "token1");
-    
-                expect(isValid).toBeTruthy();
-            });
+            removeUser("userId1");
+
+            expect(tokenStore).toMatchObject({ });
+        });
+    });
+
+    describe("isTokenValid", () => {
+        it("should return false if user not in store", () => {
+            tokenStore["userId1"] = ["token1", "token2"];
+
+            const isValid = isTokenValid("userId2", "token1");
+
+            expect(isValid).toBeFalsy();
+        });
+
+        it("should return false if user has no valid token with the given ID in store", () => {
+            tokenStore["userId1"] = ["token1", "token2"];
+
+            const isValid = isTokenValid("userId1", "token3");
+
+            expect(isValid).toBeFalsy();
+        });
+
+        it("should return true if user has valid token with the given ID", () => {
+            tokenStore["userId1"] = ["token1", "token2"];
+
+            const isValid = isTokenValid("userId1", "token1");
+
+            expect(isValid).toBeTruthy();
         });
     });
 });
