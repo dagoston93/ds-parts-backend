@@ -1,0 +1,5 @@
+{
+    "dbConnString": "mongodb://localhost:27017/parts_test",
+    "logLevel": "error",
+    "logToMongo": false
+}
