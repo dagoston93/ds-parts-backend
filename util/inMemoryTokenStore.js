@@ -1,4 +1,4 @@
-const { tokenStore } = require("../startup/db");
+const tokenStore = {};
 
 function addToken(userId, tokenId) {
     if(!tokenStore.hasOwnProperty(userId)) {

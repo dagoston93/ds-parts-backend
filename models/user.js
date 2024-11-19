@@ -86,6 +86,16 @@ userSchema.methods.invalidateToken = async function (tokenId) {
     await this.save();
 }
 
+userSchema.statics.initTokenStore = async function () {
+    await this.find().then(users => {
+        users.forEach(user => {
+            user.validTokens.forEach(token => {
+                tokenStore.addToken(user._id, token);
+            });
+        });
+    });
+};
+
 userSchema.methods.invalidateAllTokens = async function () {
     this.validTokens = [];
     await this.save();

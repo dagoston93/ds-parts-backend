@@ -10,6 +10,7 @@ const setupRoutes = require("./startup/routes");
 const { initDb } = require("./startup/db");
 const initConfig = require("./startup/config");
 const { logger } = require("./util/logger");
+const { User } = require("./models/user");
 
 initConfig();
 
@@ -17,6 +18,7 @@ const app = express();
 setupRoutes(app);
 
 initDb();
+User.initTokenStore();
 
 const port = config.get("port");
 const server = app.listen(port, () => logger.info(`Listening on port ${port}...`));
