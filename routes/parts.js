@@ -3,7 +3,7 @@ const auth = require("../middleware/auth");
 const { canModifyParts, canDeleteParts } = require("../middleware/userRights");
 const { Part, validate, pickProperties } = require("../models/part");
 const { exists: manufacturerExists } = require("../models/manufacturer");
-const { exists: packageExists } = require("../models/package");
+const { exists: packageExists } = require("../models/partPackage");
 const { exists: categoryExists } = require("../models/category");
 
 const router = express.Router();
@@ -36,7 +36,7 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
         return;
     }
 
-    if(req.body.package && !(await packageExists(req.body.package))) {
+    if(req.body.partPackage && !(await packageExists(req.body.partPackage))) {
         res.status(400).send("Package does not exist.");
         return;
     }
@@ -65,7 +65,7 @@ router.put("/:id", [auth, canModifyParts], async (req, res) => {
         return;
     }
 
-    if(req.body.package && !(await packageExists(req.body.package))) {
+    if(req.body.partPackage && !(await packageExists(req.body.partPackage))) {
         res.status(400).send("Package does not exist.");
         return;
     }

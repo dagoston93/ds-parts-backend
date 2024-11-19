@@ -24,20 +24,20 @@ const packageSchema = new mongoose.Schema({
     }
 });
 
-const Package = mongoose.model("Package", packageSchema);
+const PartPackage = mongoose.model("PartPackage", packageSchema);
 
 
-function validate(package) {
+function validate(partPackage) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(50).required(),
         type: Joi.string().valid(...packageTypes)
     });
 
-    return schema.validate(package);
+    return schema.validate(partPackage);
 }
 
 async function findByName(name) {
-    return await Package.findOne({ name: name });
+    return await PartPackage.findOne({ name: name });
 }
 
 function pickProperties(obj) {
@@ -45,15 +45,15 @@ function pickProperties(obj) {
 }
 
 async function exists(id) {
-    const package = await Package.findOne({ _id: id });
-    if(package) {
+    const partPackage = await PartPackage.findOne({ _id: id });
+    if(partPackage) {
         return true;
     }
 
     return false;
 }
 
-module.exports.Package = Package;
+module.exports.PartPackage = PartPackage;
 module.exports.validate = validate;
 module.exports.packageTypes = packageTypes;
 module.exports.findByName = findByName;

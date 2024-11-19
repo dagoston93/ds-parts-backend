@@ -5,7 +5,7 @@ const parts = require("../routes/parts");
 const categories = require("../routes/categories");
 const users = require("../routes/users");
 const manufacturers = require("../routes/manufacturers");
-const packages = require("../routes/packages");
+const packages = require("../routes/partPackages");
 const auth = require("../routes/auth");
 const error = require("../middleware/error");
 

@@ -1,13 +1,13 @@
 const express = require("express");
 const auth = require("../middleware/auth");
 const { canModifyParts, canDeleteParts } = require("../middleware/userRights");
-const { Package, validate, packageTypes, findByName, pickProperties } = require("../models/package");
+const { PartPackage, validate, packageTypes, findByName, pickProperties } = require("../models/partPackage");
 
 const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
-    const package = await Package.find();
-    res.send(package);
+    const partPackage = await PartPackage.find();
+    res.send(partPackage);
 });
 
 router.get("/types", auth, (req, res) => {
@@ -15,14 +15,14 @@ router.get("/types", auth, (req, res) => {
 });
 
 router.get("/:id", auth, async (req, res) => {
-    const package = await Package.findById(req.params.id);
+    const partPackage = await PartPackage.findById(req.params.id);
 
-    if(!package) {
+    if(!partPackage) {
         res.status(404).send("Package with given ID not found.");
         return;
     }
 
-    res.send(package);
+    res.send(partPackage);
 });
 
 router.post("/", [auth, canModifyParts], async (req, res) => {
@@ -32,17 +32,17 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
         return;
     }
     
-    let package = await findByName(req.body.name);
-    if(package) {
+    let partPackage = await findByName(req.body.name);
+    if(partPackage) {
         res.status(400).send("Package already exsits.");
         return;
     }
 
-    package = new Package(pickProperties(req.body));
-    package.createdBy = req.user._id;
-    package = await package.save();
+    partPackage = new PartPackage(pickProperties(req.body));
+    partPackage.createdBy = req.user._id;
+    partPackage = await partPackage.save();
 
-    res.send(package);
+    res.send(partPackage);
 });
 
 router.put("/:id", [auth, canModifyParts], async (req, res) => {
@@ -52,14 +52,14 @@ router.put("/:id", [auth, canModifyParts], async (req, res) => {
         return;
     }
 
-    let package = await Package.findById(req.params.id);
+    let partPackage = await PartPackage.findById(req.params.id);
 
-    if(!package) {
+    if(!partPackage) {
         res.status(404).send("Package with given ID not found.");
         return;
     }
 
-    if(package.name != req.body.name) {
+    if(partPackage.name != req.body.name) {
         let existingPackage = await findByName(req.body.name);
         if(existingPackage) {
             res.status(400).send("Package already exsits.");
@@ -67,21 +67,21 @@ router.put("/:id", [auth, canModifyParts], async (req, res) => {
         }       
     }
 
-    Object.assign(package, pickProperties(req.body));
+    Object.assign(partPackage, pickProperties(req.body));
 
-    package = await package.save();
-    res.send(package);
+    partPackage = await partPackage.save();
+    res.send(partPackage);
 });
 
 router.delete("/:id", [auth, canDeleteParts], async (req, res) => {
-    const package = await Package.findByIdAndDelete(req.params.id);
+    const partPackage = await PartPackage.findByIdAndDelete(req.params.id);
 
-    if(!package) {
+    if(!partPackage) {
         res.status(404).send("Package with given ID not found.");
         return;
     }
 
-    res.send(package);
+    res.send(partPackage);
 });
 
 module.exports = router;

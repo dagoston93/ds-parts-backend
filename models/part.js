@@ -16,9 +16,9 @@ const partSchema = new mongoose.Schema({
         ref: "Manufacturer",
         autopopulate: true
     },
-    package: {
+    partPackage: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Package",
+        ref: "PartPackage",
         autopopulate: true
     },
     price: {
@@ -48,7 +48,7 @@ function validate(part) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(255).required(),
         manufacturer: Joi.objectId(),
-        package: Joi.objectId(),
+        partPackage: Joi.objectId(),
         price: Joi.number().greater(0).required(),
         count: Joi.number().min(0).required(),
         category: Joi.objectId()
@@ -63,7 +63,7 @@ function pickProperties(obj) {
         [
             "name",
             "manufacturer",
-            "package",
+            "partPackage",
             "price",
             "count",
             "category"

@@ -19,4 +19,6 @@ setupRoutes(app);
 initDb();
 
 const port = config.get("port");
-app.listen(port, () => logger.info(`Listening on port ${port}...`));
+const server = app.listen(port, () => logger.info(`Listening on port ${port}...`));
+
+module.exports = server;
