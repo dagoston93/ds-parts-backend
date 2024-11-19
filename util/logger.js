@@ -21,8 +21,6 @@ function initializeLogger() {
         const logFilePath = config.get("logFilePath");
         const infoLogFilePath = path.resolve(__dirname, `${logFilePath}/combined.log`);
         const errorLogFilePath = path.resolve(__dirname, `${logFilePath}/errors.log`);
-
-        console.log(errorLogFilePath);
         
         const logLevel = config.get("logLevel");
 
