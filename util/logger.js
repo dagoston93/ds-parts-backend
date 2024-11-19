@@ -18,8 +18,11 @@ let logger = null;
 
 function initializeLogger() {
     if (!logger) {
-        const infoLogFilePath = path.resolve(__dirname, "../logs/combined.log");
-        const errorLogFilePath = path.resolve(__dirname, "../logs/errors.log");
+        const logFilePath = config.get("logFilePath");
+        const infoLogFilePath = path.resolve(__dirname, `${logFilePath}/combined.log`);
+        const errorLogFilePath = path.resolve(__dirname, `${logFilePath}/errors.log`);
+
+        console.log(errorLogFilePath);
         
         const logLevel = config.get("logLevel");
 
