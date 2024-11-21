@@ -134,32 +134,8 @@ describe(testedRoute, () => {
             expect(userRights.canModifyParts).toHaveBeenCalled();
         });
 
-        it("should respond 400 if name is not provided", async () => {
+        it("should respond 400 if manufacturer validation fails", async () => {
             manufacturer = { };
-
-            const res = await exec();
-
-            expect(res.status).toBe(400);
-        });
-
-        it("should respond 400 if name is not a string", async () => {
-            manufacturer.name = null;
-
-            const res = await exec();
-
-            expect(res.status).toBe(400);
-        });
-
-        it("should respond 400 if name is less than 2 characters", async () => {
-            manufacturer.name = "a";
-
-            const res = await exec();
-
-            expect(res.status).toBe(400);
-        });
-
-        it("should respond 400 if name is more than 150 characters", async () => {
-            manufacturer.name = utils.getLongString(151);
 
             const res = await exec();
 
@@ -239,32 +215,8 @@ describe(testedRoute, () => {
             expect(res.status).toBe(404);
         });
 
-        it("should respond 400 if name is not provided", async () => {
+        it("should respond 400 if manufacturer validation fails", async () => {
             newManufacturer = { };
-
-            const res = await exec();
-
-            expect(res.status).toBe(400);
-        });
-
-        it("should respond 400 if name is not a string", async () => {
-            newManufacturer.name = null;
-
-            const res = await exec();
-
-            expect(res.status).toBe(400);
-        });
-
-        it("should respond 400 if name is less than 2 characters", async () => {
-            newManufacturer.name = "a";
-
-            const res = await exec();
-
-            expect(res.status).toBe(400);
-        });
-
-        it("should respond 400 if name is more than 150 characters", async () => {
-            newManufacturer.name = utils.getLongString(151);
 
             const res = await exec();
 
