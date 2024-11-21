@@ -4,7 +4,7 @@ jest.mock("../../../middleware/auth", () => jest.fn((req, res, next) => { req.us
 jest.mock("../../../middleware/validateObjectId", () => jest.fn((req, res, next) => next()));
 
 const request = require("supertest");
-const utils = require("../utils/utils");
+const utils = require("../../_test-utils/utils");
 
 const { Manufacturer } = require("../../../models/manufacturer");
 
