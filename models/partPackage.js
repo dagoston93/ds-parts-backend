@@ -30,7 +30,8 @@ const PartPackage = mongoose.model("PartPackage", packageSchema);
 function validate(partPackage) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(50).required(),
-        type: Joi.string().valid(...packageTypes)
+        type: Joi.string().valid(...packageTypes),
+        createdBy: Joi.objectId()
     });
 
     return schema.validate(partPackage);
