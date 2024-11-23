@@ -218,7 +218,7 @@ describe(testedRoute, ()=>{
         it("should save the category if request is valid", async () => {
             await exec();
 
-            const categoryInDb = Category.find({ name: "Category1" });
+            const categoryInDb = await Category.findOne({ name: "Category1" });
 
             expect(categoryInDb).not.toBeNull();
         });
@@ -318,7 +318,7 @@ describe(testedRoute, ()=>{
         it("should save the category if request is valid", async () => {
             await exec();
 
-            const categoryInDb = Category.find({ name: newCategory.name });
+            const categoryInDb = await Category.findOne({ name: newCategory.name });
 
             expect(categoryInDb).not.toBeNull();
         });

@@ -153,7 +153,7 @@ describe(testedRoute, () => {
         it("should save the manufacturer if request is valid", async () => {
             await exec();
 
-            const manufacturerInDb = Manufacturer.find({ name: "Manufacturer1" });
+            const manufacturerInDb = await Manufacturer.findOne({ name: "Manufacturer1" });
 
             expect(manufacturerInDb).not.toBeNull();
         });
@@ -235,7 +235,7 @@ describe(testedRoute, () => {
         it("should save the manufacturer if request is valid", async () => {
             await exec();
 
-            const manufacturerInDb = Manufacturer.find({ name: newManufacturer.name });
+            const manufacturerInDb = await Manufacturer.findOne({ name: newManufacturer.name });
 
             expect(manufacturerInDb).not.toBeNull();
         });
