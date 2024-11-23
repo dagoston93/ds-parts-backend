@@ -71,7 +71,7 @@ describe("partPackage model", () => {
             expect(error).not.toBeDefined();
         });
 
-        it("should not return an error if partPackage is valid - SMD - no creator", () => {
+        it("should not return an error if partPackage is valid - THT - no creator", () => {
             partPackage.type = 'THT';
 
             const { error } = partPackage.validate(newPartPackage);
