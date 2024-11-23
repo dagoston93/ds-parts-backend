@@ -53,7 +53,7 @@ router.post("/", [auth, userRights.canModifyParts], async (req, res) => {
 
     let category = new Category(pickProperties(req.body));
     category.createdBy = req.user._id;
-    category.save();
+    await category.save();
 
     res.send(category);
 });

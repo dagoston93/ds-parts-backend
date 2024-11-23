@@ -4,7 +4,11 @@ jest.mock("../../../middleware/auth", () => jest.fn((req, res, next) => { req.us
 jest.mock("../../../middleware/validateObjectId", () => jest.fn((req, res, next) => next()));
 
 const request = require("supertest");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+
 const utils = require("../../_test-utils/utils");
+const tokenUtils = require("../../_test-utils/tokenUtils");
 
 const { Category } = require("../../../models/category");
 
@@ -175,6 +179,7 @@ describe(testedRoute, ()=>{
 
     describe("POST /", ()=> {
         let category;
+        let user;
 
         const exec = async () => {
             return await request(server)
@@ -182,8 +187,10 @@ describe(testedRoute, ()=>{
                 .send(category);
         };
 
-        beforeEach(() => {
-            mockUser._id = utils.getValidObjectId();
+        beforeEach(async () => {
+            let token = await tokenUtils.getToken_User_CanRead();
+            const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+            mockUser._id = decoded.user._id;
             category = { name: "Category1" };
         });
 
@@ -221,6 +228,14 @@ describe(testedRoute, ()=>{
             const categoryInDb = await Category.findOne({ name: "Category1" });
 
             expect(categoryInDb).not.toBeNull();
+        });
+
+        it("should save the creator of the category if request is valid", async () => {
+            await exec();
+
+            const categoryInDb = await Category.findOne({ name: "Category1" });
+
+            expect(categoryInDb.createdBy._id.toString()).toBe(mockUser._id);
         });
 
         it("should return the category if request is valid - no parent given", async () => {
