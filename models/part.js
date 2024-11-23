@@ -51,7 +51,8 @@ function validate(part) {
         partPackage: Joi.objectId(),
         price: Joi.number().greater(0).required(),
         count: Joi.number().min(0).required(),
-        category: Joi.objectId()
+        category: Joi.objectId(),
+        createdBy: Joi.objectId()
     });
 
     return schema.validate(part);
