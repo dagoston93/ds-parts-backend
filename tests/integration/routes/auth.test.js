@@ -1,9 +1,18 @@
 let mockUser = { };
-
-jest.mock("../../../middleware/auth", () => jest.fn((req, res, next) => { req.user = mockUser; next();}));
+let mockTokenId;
+jest.mock("../../../middleware/auth", () => jest.fn((req, res, next) => { 
+    req.user = mockUser;
+    req.tokenId = mockTokenId;
+    next();
+}));
 
 const request = require("supertest");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+
+const tokenUtils = require("../../_test-utils/tokenUtils");
+const tokenStore = require("../../../util/inMemoryTokenStore");
 
 const { User } = require("../../../models/user");
 
@@ -104,7 +113,70 @@ describe(testedRoute, ()=>{
             expect(res.status).toBe(400);
         });
 
+        it("should send a valid token if request is valid", async () => {
+            const res = await exec();
+
+            expect(() =>  jwt.verify(res.text, config.get("jwtPrivateKey"))).not.toThrow();
+        })
+
         it("should should respond 200 if request is valid", async () => {
+            const res = await exec();
+            
+            expect(res.status).toBe(200);
+        });
+    });
+
+    describe("POST /logout", ()=> {
+        let token;
+
+        const exec = () => {
+            return request(server)
+                .post(`${testedRoute}/logout`)
+                .set("x-auth-token", token)
+                .send();
+        };
+
+        beforeEach(async () => {
+            token = await tokenUtils.getToken_User_CanRead();
+            const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
+            mockUser = decoded.user;
+            mockTokenId = decoded.tokenId;
+        });
+
+        afterEach(async () => {
+            await tokenUtils.removeUsers();
+        });
+
+        it("should call auth middleware", async () => {
+            await exec();
+
+            expect(auth).toHaveBeenCalled();
+        });
+
+        it("should respond 400 if user with the given ID not found", async () => {
+            await User.deleteMany({});
+
+            const res = await exec();
+
+            expect(res.status).toBe(400);
+        });
+
+        it("should invalidate the token if request is valid", async () => {
+            await exec();
+            const userInDb = await User.findById(mockUser._id);
+            const isValid = tokenStore.isTokenValid(mockUser._id, mockTokenId);
+
+            expect(userInDb.validTokens).not.toContain(mockTokenId);
+            expect(isValid).toBe(false);
+        });
+
+        it("should send the user id if request is valid", async () => {
+            const res = await exec();
+            
+            expect(res.text).toEqual(mockUser._id);
+        });
+
+        it("should respond 200 if request is valid", async () => {
             const res = await exec();
             
             expect(res.status).toBe(200);

@@ -17,7 +17,7 @@ describe("auth middleware", () => {
     });
 
     afterEach(async () => {
-        tokenUtils.removeUsers();
+        await tokenUtils.removeUsers();
         await server.close();
     });
 
