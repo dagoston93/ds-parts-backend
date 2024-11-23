@@ -1,5 +1,6 @@
 const express = require("express");
 const auth = require("../middleware/auth");
+const validateObjectId = require("../middleware/validateObjectId");
 const { canModifyParts, canDeleteParts } = require("../middleware/userRights");
 const { PartPackage, validate, packageTypes, findByName, pickProperties } = require("../models/partPackage");
 
@@ -14,7 +15,7 @@ router.get("/types", auth, (req, res) => {
     res.send(packageTypes);
 });
 
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", [auth, validateObjectId], async (req, res) => {
     const partPackage = await PartPackage.findById(req.params.id);
 
     if(!partPackage) {
@@ -45,7 +46,7 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
     res.send(partPackage);
 });
 
-router.put("/:id", [auth, canModifyParts], async (req, res) => {
+router.put("/:id", [auth, canModifyParts, validateObjectId], async (req, res) => {
     const {error} = validate(req.body);
     if(error) {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
@@ -73,7 +74,7 @@ router.put("/:id", [auth, canModifyParts], async (req, res) => {
     res.send(partPackage);
 });
 
-router.delete("/:id", [auth, canDeleteParts], async (req, res) => {
+router.delete("/:id", [auth, canDeleteParts, validateObjectId], async (req, res) => {
     const partPackage = await PartPackage.findByIdAndDelete(req.params.id);
 
     if(!partPackage) {
