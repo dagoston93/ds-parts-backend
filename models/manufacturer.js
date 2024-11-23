@@ -22,7 +22,8 @@ const Manufacturer = mongoose.model("Manufacturer", manufacturerSchema);
 
 function validate(manufacturer) {
     const schema = Joi.object({
-        name: Joi.string().min(2).max(150).required()
+        name: Joi.string().min(2).max(150).required(),
+        createdBy: Joi.objectId()
     });
 
     return schema.validate(manufacturer);
