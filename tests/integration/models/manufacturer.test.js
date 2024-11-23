@@ -56,7 +56,7 @@ describe("manufacturer model", () => {
                 { 
                     name: "12345",
                     createdBy: utils.getValidObjectId()
-        });
+            });
             
             expect(error).not.toBeDefined();
         });
