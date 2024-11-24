@@ -129,6 +129,10 @@ describe(testedRoute, () => {
             manufacturer = { name: "Manufacturer1" };
         });
 
+        afterEach(async () => {
+            await tokenUtils.removeUsers();
+        });
+
         it("should call auth middleware", async () => {
             await exec();
 
