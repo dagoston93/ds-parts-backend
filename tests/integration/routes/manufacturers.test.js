@@ -259,6 +259,16 @@ describe(testedRoute, () => {
             expect(manufacturerInDb).not.toBeNull();
         });
 
+        it("should save the manufacturer if request is valid - name identical", async () => {
+            newManufacturer.name = "Manufacturer1";
+            
+            await exec();
+
+            const manufacturerInDb = await Manufacturer.findOne({ name: newManufacturer.name });
+
+            expect(manufacturerInDb).not.toBeNull();
+        });
+
         it("should return the modified manufacturer if request is valid", async () => {
             const res = await exec();
 

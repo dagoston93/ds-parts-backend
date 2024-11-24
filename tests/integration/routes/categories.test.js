@@ -222,7 +222,7 @@ describe(testedRoute, ()=>{
             expect(res.status).toBe(400);
         });
 
-        it("should save the category if request is valid", async () => {
+        it("should save the category if request is valid - no parent given", async () => {
             await exec();
 
             const categoryInDb = await Category.findOne({ name: "Category1" });
@@ -250,15 +250,30 @@ describe(testedRoute, ()=>{
 
             expect(res.status).toBe(200);
         });
+
+        it("should save the category if request is valid - no parent given", async () => {
+            const parentCategory = new Category({ name: "ParentCategory" });
+            await parentCategory.save();
+            category.parent = parentCategory._id;
+
+            await exec();
+
+            const categoryInDb = await Category.findOne({ name: "Category1" });
+
+            expect(categoryInDb).not.toBeNull();
+            expect(categoryInDb.parent._id.toString()).toBe(parentCategory._id.toString());
+        });
         
         it("should return the category if request is valid - valid parent given", async () => {
             const parentCategory = new Category({ name: "ParentCategory" });
             await parentCategory.save();
             category.parent = parentCategory._id;
+
             const res = await exec();
 
             expect(res.body).toHaveProperty("_id");
             expect(res.body).toHaveProperty("name", "Category1");
+            expect(res.body.parent._id.toString()).toBe(parentCategory._id.toString());
         });
 
         it("should respond 200 if request is valid - valid parent given", async () => {
@@ -346,6 +361,41 @@ describe(testedRoute, ()=>{
         });
 
         it("should respond 200 if request is valid", async () => {
+            const res = await exec();
+
+            expect(res.status).toBe(200);
+        });
+
+        it("should save the category if request is valid - no parent given", async () => {
+            const parentCategory = new Category({ name: "ParentCategory" });
+            await parentCategory.save();
+            newCategory.parent = parentCategory._id;
+
+            await exec();
+
+            const categoryInDb = await Category.findOne({ name: "Category2" });
+
+            expect(categoryInDb).not.toBeNull();
+            expect(categoryInDb.parent._id.toString()).toBe(parentCategory._id.toString());
+        });
+        
+        it("should return the category if request is valid - valid parent given", async () => {
+            const parentCategory = new Category({ name: "ParentCategory" });
+            await parentCategory.save();
+            newCategory.parent = parentCategory._id;
+
+            const res = await exec();
+
+            expect(res.body).toHaveProperty("_id");
+            expect(res.body).toHaveProperty("name", "Category2");
+            expect(res.body.parent._id.toString()).toBe(parentCategory._id.toString());
+        });
+
+        it("should respond 200 if request is valid - valid parent given", async () => {
+            const parentCategory = new Category({ name: "ParentCategory" });
+            await parentCategory.save();
+            newCategory.parent = parentCategory._id;
+            
             const res = await exec();
 
             expect(res.status).toBe(200);

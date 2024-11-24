@@ -282,6 +282,16 @@ describe(testedRoute, () => {
             expect(partPackageInDb).not.toBeNull();
         });
 
+        it("should save the package if request is valid - name identical", async () => {
+            newPartPackage.name = "package1";
+
+            await exec();
+
+            const partPackageInDb = await PartPackage.findOne({ name: newPartPackage.name });
+
+            expect(partPackageInDb).not.toBeNull();
+        });
+
         it("should return the modified package if request is valid", async () => {
             const res = await exec();
 
