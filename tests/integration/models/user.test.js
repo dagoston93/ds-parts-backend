@@ -221,7 +221,5 @@ describe("category model", () => {
             console.log(error);
             expect(error).not.toBeDefined();
         });
-
-
     });
 });
