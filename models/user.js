@@ -148,7 +148,7 @@ async function findByEmail(email) {
 }
 
 function pickUserProperties(obj) {
-    return lodash.pick(obj, ["name", "email", "rights"]);
+    return lodash.pick(obj, ["_id", "name", "email", "rights"]);
 }
 
 function pickUserRightsProperties(obj) {

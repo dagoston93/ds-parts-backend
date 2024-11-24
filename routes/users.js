@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
+const validateObjectId = require("../middleware/validateObjectId");
 const lodash = require("lodash");
 const { canModifyUsers, canDeleteUsers } = require("../middleware/userRights");
 const { User, validateUser, validateUserRights, findByEmail, pickUserProperties, pickUserRightsProperties } = require("../models/user");
@@ -8,13 +9,13 @@ const tokenStore = require("../util/inMemoryTokenStore");
 
 const router = express.Router();
 
-router.get("/", auth, async (req, res) => {
+router.get("/", [auth, canModifyUsers], async (req, res) => {
     const users = await User.find();
 
     res.send(users);
 });
 
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", [auth, canModifyUsers, validateObjectId], async (req, res) => {
     const user = await User.findById(req.params.id);
 
     if(!user) {
@@ -48,7 +49,7 @@ router.post("/", [auth, canModifyUsers], async (req, res) => {
     res.send(pickUserProperties(user));
 });
 
-router.put("/rights/:id", [auth, canModifyUsers], async (req, res) => {
+router.put("/rights/:id", [auth, canModifyUsers, validateObjectId], async (req, res) => {
     const { error } = validateUserRights(req.body);
     if(error) {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
@@ -57,7 +58,7 @@ router.put("/rights/:id", [auth, canModifyUsers], async (req, res) => {
     
     let user = await User.findById(req.params.id);
     if(!user) {
-        res.status(400).send("User with the given ID does not exist.");
+        res.status(404).send("User with the given ID does not exist.");
         return;
     }
 
@@ -72,7 +73,7 @@ router.put("/rights/:id", [auth, canModifyUsers], async (req, res) => {
     res.send(pickUserProperties(user));
 });
 
-router.delete("/:id", [auth, canDeleteUsers], async (req, res) => {
+router.delete("/:id", [auth, canDeleteUsers, validateObjectId], async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
 
     if(!user) {

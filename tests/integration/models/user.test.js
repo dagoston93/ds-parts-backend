@@ -210,7 +210,6 @@ describe("category model", () => {
 
         it("should not return an error if user is valid - no creator provided", () => {
             const { error } = user.validateUser(newUser);
-            console.log(error);
             expect(error).not.toBeDefined();
         });
 
@@ -218,7 +217,6 @@ describe("category model", () => {
             newUser.createdBy = utils.getValidObjectId();
 
             const { error } = user.validateUser(newUser);
-            console.log(error);
             expect(error).not.toBeDefined();
         });
     });
