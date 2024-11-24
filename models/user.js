@@ -131,7 +131,8 @@ function validateUser(user) {
             return value;
         }).required(),
         password: passwordComplexity(passwordComplexityOptions),
-        rights: userRightsSchema
+        rights: userRightsSchema,
+        createdBy: Joi.objectId()
     });
 
     return schema.validate(user);
