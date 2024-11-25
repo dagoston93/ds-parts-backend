@@ -1,5 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
+const cors = require('cors');
 
 const parts = require("../routes/parts");
 const categories = require("../routes/categories");
@@ -12,6 +13,7 @@ const error = require("../middleware/error");
 const { morganMiddleware } = require("../util/logger");
 
 module.exports = function(app) {
+    app.use(cors());
     app.use(helmet());
     app.use(express.json());
     app.use(morganMiddleware);
