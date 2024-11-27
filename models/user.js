@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const lodash = require("lodash");
 const passwordComplexity = require("joi-password-complexity");
 const config = require("config");
-const autopopulate = require("mongoose-autopopulate");
 const { isEmail } = require("validator");
 const { nanoid } = require('nanoid');
 const tokenStore = require("../util/inMemoryTokenStore");
@@ -33,8 +32,7 @@ const userSchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        autopopulate: { select: "name email" }
+        ref: "User"
     },
     rights: {
         canModifyParts: {
@@ -56,8 +54,6 @@ const userSchema = new mongoose.Schema({
     },
     validTokens: [String]
 });
-
-userSchema.plugin(autopopulate);
 
 userSchema.methods.generateAuthToken = async function() {
     let tokenData = {};
