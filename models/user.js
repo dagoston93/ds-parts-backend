@@ -33,8 +33,7 @@ const userSchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        autopopulate: { select: "name email" }
+        ref: "User"
     },
     rights: {
         canModifyParts: {
