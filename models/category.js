@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const lodash = require("lodash");
+const autopopulate = require("mongoose-autopopulate");
 
 const categorySchema = new mongoose.Schema({
     name: { 
@@ -12,13 +13,17 @@ const categorySchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        autopopulate: { select: "name email" }
     },
     parent: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category"
+        ref: "Category",
+        autopopulate: { select: "name" }
     }
 });
+
+categorySchema.plugin(autopopulate);
 
 const Category = mongoose.model("Category", categorySchema);
 

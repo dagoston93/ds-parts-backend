@@ -261,7 +261,7 @@ describe(testedRoute, ()=>{
             const categoryInDb = await Category.findOne({ name: "Category1" });
 
             expect(categoryInDb).not.toBeNull();
-            expect(categoryInDb.parent.toString()).toBe(parentCategory._id.toString());
+            expect(categoryInDb.parent._id.toString()).toBe(parentCategory._id.toString());
         });
         
         it("should return the category if request is valid - valid parent given", async () => {
@@ -273,7 +273,7 @@ describe(testedRoute, ()=>{
 
             expect(res.body).toHaveProperty("_id");
             expect(res.body).toHaveProperty("name", "Category1");
-            expect(res.body.parent.toString()).toBe(parentCategory._id.toString());
+            expect(res.body.parent._id.toString()).toBe(parentCategory._id.toString());
         });
 
         it("should respond 200 if request is valid - valid parent given", async () => {
@@ -376,7 +376,7 @@ describe(testedRoute, ()=>{
             const categoryInDb = await Category.findOne({ name: "Category2" });
 
             expect(categoryInDb).not.toBeNull();
-            expect(categoryInDb.parent.toString()).toBe(parentCategory._id.toString());
+            expect(categoryInDb.parent._id.toString()).toBe(parentCategory._id.toString());
         });
         
         it("should return the category if request is valid - valid parent given", async () => {
@@ -388,7 +388,7 @@ describe(testedRoute, ()=>{
 
             expect(res.body).toHaveProperty("_id");
             expect(res.body).toHaveProperty("name", "Category2");
-            expect(res.body.parent.toString()).toBe(parentCategory._id.toString());
+            expect(res.body.parent._id.toString()).toBe(parentCategory._id.toString());
         });
 
         it("should respond 200 if request is valid - valid parent given", async () => {

@@ -384,9 +384,9 @@ describe(testedRoute, ()=>{
             expect(res.body).toHaveProperty("price", newPart.price);
             expect(res.body).toHaveProperty("count", newPart.count);
 
-            expect(res.body.manufacturer.toString()).toBe(manufacturer._id.toString());
-            expect(res.body.partPackage.toString()).toBe(partPackage._id.toString());
-            expect(res.body.category.toString()).toBe(category._id.toString());
+            expect(res.body.manufacturer._id.toString()).toBe(manufacturer._id.toString());
+            expect(res.body.partPackage._id.toString()).toBe(partPackage._id.toString());
+            expect(res.body.category._id.toString()).toBe(category._id.toString());
         });
 
         it("should respond 200 if request is valid - valid objectId type params given", async () => {
