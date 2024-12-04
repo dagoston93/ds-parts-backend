@@ -250,9 +250,9 @@ describe(testedRoute, ()=>{
             expect(res.body).toHaveProperty("price", 1);
             expect(res.body).toHaveProperty("count", 2);
             
-            expect(res.body).toHaveProperty("manufacturer", manufacturer._id.toString());
-            expect(res.body).toHaveProperty("partPackage", partPackage._id.toString());
-            expect(res.body).toHaveProperty("category", category._id.toString());
+            expect(res.body).toHaveProperty("manufacturer._id", manufacturer._id.toString());
+            expect(res.body).toHaveProperty("partPackage._id", partPackage._id.toString());
+            expect(res.body).toHaveProperty("category._id", category._id.toString());
         });
 
         it("should respond 200 if request is valid - valid objectId type params given", async () => {
