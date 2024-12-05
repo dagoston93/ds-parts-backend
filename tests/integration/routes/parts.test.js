@@ -468,4 +468,113 @@ describe(testedRoute, ()=>{
             expect(res.status).toBe(200);
         });
     });
+
+    describe("POST /:id/increment-count", ()=> {
+        let part;
+
+        const exec = async () => {
+            return await request(server)
+                .post(`${testedRoute}/${part._id}/increment-count`)
+                .send();
+        };
+
+        beforeEach(async () => {            
+            part = await new Part({ name: "Part1", price: 1, count: 2 }).save();
+        });
+
+        it("should call auth middleware", async () => {
+            await exec();
+
+            expect(auth).toHaveBeenCalled();
+        });
+
+        it("should call canModifyParts middleware", async () => {
+            await exec();
+
+            expect(userRights.canModifyParts).toHaveBeenCalled();
+        });
+
+        it("should increase the part count by one if request is valid", async () => {
+            await exec();
+
+            const partInDb = await Part.findById(part._id);
+
+            expect(partInDb.count).toBe(part.count + 1);
+        });
+
+        it("should return the part if request is valid", async () => {
+            const res = await exec();
+
+            expect(res.body).toHaveProperty("_id");
+            expect(res.body).toHaveProperty("name", part.name);
+            expect(res.body).toHaveProperty("price", part.price);
+            expect(res.body).toHaveProperty("count", part.count + 1);
+        });
+
+        it("should respond 200 if request is valid", async () => {
+            const res = await exec();
+
+            expect(res.status).toBe(200);
+        });
+    });
+
+    describe("POST /:id/decrement-count", ()=> {
+        let part;
+
+        const exec = async () => {
+            return await request(server)
+                .post(`${testedRoute}/${part._id}/decrement-count`)
+                .send();
+        };
+
+        beforeEach(async () => {            
+            part = await new Part({ name: "Part1", price: 1, count: 2 }).save();
+        });
+
+        it("should call auth middleware", async () => {
+            await exec();
+
+            expect(auth).toHaveBeenCalled();
+        });
+
+        it("should call canModifyParts middleware", async () => {
+            await exec();
+
+            expect(userRights.canModifyParts).toHaveBeenCalled();
+        });
+
+        it("should decrease the part count by one if request is valid", async () => {
+            await exec();
+
+            const partInDb = await Part.findById(part._id);
+
+            expect(partInDb.count).toBe(part.count - 1);
+        });
+
+        it("should not decrease the part count if it is already 0", async () => {
+            part.count = 0;
+            await part.save();
+
+            await exec();
+
+            const partInDb = await Part.findById(part._id);
+
+            expect(partInDb.count).toBe(0);
+        });
+
+        it("should return the part if request is valid", async () => {
+            const res = await exec();
+
+            expect(res.body).toHaveProperty("_id");
+            expect(res.body).toHaveProperty("name", part.name);
+            expect(res.body).toHaveProperty("price", part.price);
+            expect(res.body).toHaveProperty("count", part.count - 1);
+        });
+
+        it("should respond 200 if request is valid", async () => {
+            const res = await exec();
+
+            expect(res.status).toBe(200);
+        });
+    });
 });
