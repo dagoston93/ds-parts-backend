@@ -102,4 +102,34 @@ router.delete("/:id", [auth, canDeleteParts, validateObjectId], async (req, res)
     res.send(part);
 });
 
+router.post("/:id/increment-count", [auth, canModifyParts, validateObjectId], async(req, res) => {
+    const part = await Part.findById(req.params.id);
+
+    if(!part) {
+        res.status(404).send("Part with given ID not found.");
+        return;
+    }
+
+    part.count += 1;
+    await part.save();
+
+    res.send(part);
+});
+
+router.post("/:id/decrement-count", [auth, canModifyParts, validateObjectId], async(req, res) => {
+    const part = await Part.findById(req.params.id);
+
+    if(!part) {
+        res.status(404).send("Part with given ID not found.");
+        return;
+    }
+
+    if(part.count > 0) {
+        part.count -= 1;
+        await part.save();
+    }
+
+    res.send(part);
+});
+
 module.exports = router;
