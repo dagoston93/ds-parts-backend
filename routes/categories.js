@@ -65,6 +65,8 @@ router.put("/:id", [auth, userRights.canModifyParts, validateObjectId], async (r
         return;
     }
 
+    const newData = pickProperties(req.body);
+
     if(req.body.parent) {
         const category = await Category.findById(req.body.parent);
 
@@ -72,12 +74,14 @@ router.put("/:id", [auth, userRights.canModifyParts, validateObjectId], async (r
             res.status(400).send("If parent is provided, it has to be a valid category ID.");
             return;
         }
+    }else{
+        newData.parent = null;
     }
 
     const category = await Category
         .findByIdAndUpdate(
             req.params.id,
-            pickProperties(req.body),
+            newData,
             { new: true }
         );
 

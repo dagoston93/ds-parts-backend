@@ -378,6 +378,20 @@ describe(testedRoute, ()=>{
             expect(categoryInDb).not.toBeNull();
             expect(categoryInDb.parent._id.toString()).toBe(parentCategory._id.toString());
         });
+
+        it("should remove original parent if no parent given in request", async () => {
+            const parentCategory = new Category({ name: "ParentCategory" });
+            await parentCategory.save();
+            category = await new Category({ name: "Category1", parent: parentCategory._id }).save();
+            newCategory = {name: "Category2"};
+
+            await exec();
+
+            const categoryInDb = await Category.findOne({ name: "Category2" });
+
+            expect(categoryInDb).not.toBeNull();
+            expect(categoryInDb.parent).toBeNull();
+        });
         
         it("should return the category if request is valid - valid parent given", async () => {
             const parentCategory = new Category({ name: "ParentCategory" });
