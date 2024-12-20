@@ -36,15 +36,15 @@ describe("auth middleware", () => {
         expect(res.status).toBe(401);
     });
 
-    it("should respond 400 if invalid token is provided", async () => {
+    it("should respond 401 if invalid token is provided", async () => {
         token = 'invalidtoken';
 
         const res = await exec();
 
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(401);
     });
 
-    it("should respond 400 if token is invalidated", async () => {
+    it("should respond 401 if token is invalidated", async () => {
         const decoded = jwt.verify(token, config.get("jwtPrivateKey"));
         
         const user = await User.findById(decoded.user._id);
@@ -54,7 +54,7 @@ describe("auth middleware", () => {
 
         const res = await exec();
 
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(401);
     });
 
     it("should respond 200 if valid token is provided", async () => {

@@ -21,7 +21,7 @@ function auth(req, res, next) {
         next();
     }
     catch(ex) {
-        res.status(400).send("Invalid access token.");
+        res.status(401).send("Invalid access token.");
         return;
     }
 }
