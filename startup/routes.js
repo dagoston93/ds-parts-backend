@@ -1,6 +1,7 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 const parts = require("../routes/parts");
 const categories = require("../routes/categories");
@@ -10,9 +11,16 @@ const packages = require("../routes/partPackages");
 const auth = require("../routes/auth");
 const error = require("../middleware/error");
 
+const { logger } = require("../util/logger");
 const { morganMiddleware } = require("../util/logger");
 
 module.exports = function(app) {
+    app.use(fileUpload(
+        {
+            debug: true,
+            logger: (msg) => {logger.info(msg)}
+        }
+    ));
     app.use(cors());
     app.use(helmet());
     app.use(express.json());
