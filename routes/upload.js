@@ -28,7 +28,7 @@ router.post("/image", [auth, userRights.canModifyParts], async (req, res) => {
     }
 
 
-    let file = req.files['image[]'];
+    let file = req.files['file[]'];
     let fileName = file.name;
     let n = 1;
 
