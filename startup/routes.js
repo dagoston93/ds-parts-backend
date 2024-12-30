@@ -9,6 +9,7 @@ const users = require("../routes/users");
 const manufacturers = require("../routes/manufacturers");
 const packages = require("../routes/partPackages");
 const auth = require("../routes/auth");
+const upload = require("../routes/upload");
 const error = require("../middleware/error");
 
 const { logger } = require("../util/logger");
@@ -18,7 +19,8 @@ module.exports = function(app) {
     app.use(fileUpload(
         {
             debug: true,
-            logger: (msg) => {logger.info(msg)}
+            logger: (msg) => {logger.info(msg)},
+            createParentPath: true
         }
     ));
     app.use(cors());
@@ -31,5 +33,6 @@ module.exports = function(app) {
     app.use("/api/manufacturers", manufacturers);
     app.use("/api/packages", packages);
     app.use("/api/auth", auth);
+    app.use("/api/upload", upload);
     app.use(error);
 }
