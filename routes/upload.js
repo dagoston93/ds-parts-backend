@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const auth = require("../middleware/auth");
 const userRights = require("../middleware/userRights");
-const { Image, validate, pickProperties, imageExists } = require("../models/file");
+const { Image, File, validate, pickProperties, imageExists, fileExists } = require("../models/file");
 
 // Helper function to split the file name into base and extension
 function getFileNameParts(name) {
@@ -14,9 +14,7 @@ function getFileNameParts(name) {
     return { base: name.substring(0, dotIndex), ext: name.substring(dotIndex) };
 }
 
-const router = express.Router();
-
-router.post("/image", [auth, userRights.canModifyParts], async (req, res) => {
+async function uploadFile(req, res, exists, targetDir, dbEntity) {
     const { error } = validate(req.body);
     if(error) {
         res.status(400).send("Bad Request!\n" + error.details[0].message);
@@ -32,29 +30,38 @@ router.post("/image", [auth, userRights.canModifyParts], async (req, res) => {
     let fileName = file.name;
     let n = 1;
 
-    while(await imageExists(fileName)) {
+    while(await exists(fileName)) {
         const { base, ext } = getFileNameParts(file.name);
         fileName = `${base}_${n}${ext}`;
         n += 1;
     }
 
-   const uploadPath = path.resolve(__dirname, `../uploads/images/${fileName}`);
+   const uploadPath = path.resolve(__dirname, `../uploads/${targetDir}/${fileName}`);
 
     file.mv(uploadPath, (err) => {
         if (err) {
-            console.log("ERRRRRRR:", err);
             return res.status(500).send(err);
         }
     });
 
-    let imageProps = pickProperties(req.body);
-    imageProps.fileName = fileName;
-    let image = new Image(imageProps);
+    let fileProps = pickProperties(req.body);
+    fileProps.fileName = fileName;
+    let fileInDb = new dbEntity(fileProps);
 
-    image.createdBy = req.user._id;
-    await image.save();
+    fileInDb.createdBy = req.user._id;
+    await fileInDb.save();
 
-    res.send(image);
+    return res.send(fileInDb);
+}
+
+const router = express.Router();
+
+router.post("/image", [auth, userRights.canModifyParts], async (req, res) => {
+    return uploadFile(req, res, imageExists, "images", Image);
+});
+
+router.post("/file", [auth, userRights.canModifyParts], async (req, res) => {
+    return uploadFile(req, res, fileExists, "files", File);
 });
 
 module.exports = router;
