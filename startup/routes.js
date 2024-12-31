@@ -2,6 +2,7 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const path = require("path");
 
 const parts = require("../routes/parts");
 const categories = require("../routes/categories");
@@ -34,5 +35,7 @@ module.exports = function(app) {
     app.use("/api/packages", packages);
     app.use("/api/auth", auth);
     app.use("/api/upload", upload);
+    app.use("/images", express.static(path.resolve(__dirname, "../uploads/images")));
+    app.use("/files", express.static(path.resolve(__dirname, "../uploads/files")));
     app.use(error);
 }
