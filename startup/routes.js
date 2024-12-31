@@ -24,8 +24,17 @@ module.exports = function(app) {
             createParentPath: true
         }
     ));
-    app.use(cors());
-    app.use(helmet());
+
+    app.use(cors({
+        origin: 'http://localhost:5173',
+        methods: "GET,PUT,POST,DELETE",
+        exposedHeaders: ["Content-Disposition"]
+    }));
+
+    app.use(helmet({
+        crossOriginResourcePolicy: false,
+    }));
+    
     app.use(express.json());
     app.use(morganMiddleware);
     app.use("/api/parts", parts);
