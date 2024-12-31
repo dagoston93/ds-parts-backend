@@ -23,7 +23,7 @@ const baseSchema = new mongoose.Schema({
         trim: true,
         required: true,
         minlength: 2,
-        maxlength: 50
+        maxlength: 255
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -45,7 +45,7 @@ function validate(file) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(150).required(),
         description: Joi.string().min(2).max(150).required(),
-        fileName: Joi.string().min(2).max(50),
+        fileName: Joi.string().min(2).max(255),
         createdBy: Joi.objectId(),
     });
 
