@@ -11,6 +11,7 @@ const manufacturers = require("../routes/manufacturers");
 const packages = require("../routes/partPackages");
 const auth = require("../routes/auth");
 const upload = require("../routes/upload");
+const files = require("../routes/files");
 const error = require("../middleware/error");
 
 const { logger } = require("../util/logger");
@@ -44,6 +45,7 @@ module.exports = function(app) {
     app.use("/api/packages", packages);
     app.use("/api/auth", auth);
     app.use("/api/upload", upload);
+    app.use("/api/files", files);
     app.use("/images", express.static(path.resolve(__dirname, "../uploads/images")));
     app.use("/files", express.static(path.resolve(__dirname, "../uploads/files")));
     app.use(error);
