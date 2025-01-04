@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+var sanitizeFileName = require("sanitize-filename");
 const auth = require("../middleware/auth");
 const userRights = require("../middleware/userRights");
 const { Image, File, validate, pickProperties, imageExists, fileExists } = require("../models/file");
@@ -25,9 +26,14 @@ async function uploadFile(req, res, exists, targetDir, dbEntity) {
         return res.status(400).send('No files were uploaded.');
     }
 
-
     let file = req.files['file[]'];
-    let fileName = file.name;
+    
+    let fileName = sanitizeFileName(file.name);
+    fileName = fileName.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if(!fileName) {
+        fileName = "file";
+    }
+
     let n = 1;
 
     while(await exists(fileName)) {
