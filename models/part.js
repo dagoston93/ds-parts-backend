@@ -37,6 +37,11 @@ const partSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
         autopopulate: { select: "name" }
+    },
+    primaryImage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Image",
+        autopopulate: true
     }
 });
 
@@ -51,7 +56,8 @@ function validate(part) {
         price: Joi.number().greater(0).required(),
         count: Joi.number().min(0).required(),
         category: Joi.objectId(),
-        createdBy: Joi.objectId()
+        createdBy: Joi.objectId(),
+        primaryImage: Joi.objectId(),
     });
 
     return schema.validate(part);
@@ -66,7 +72,8 @@ function pickProperties(obj) {
             "partPackage",
             "price",
             "count",
-            "category"
+            "category",
+            "primaryImage"
         ]);
 }
 
