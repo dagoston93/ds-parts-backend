@@ -42,7 +42,12 @@ const partSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Image",
         autopopulate: true
-    }
+    },
+    images: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Image",
+        autopopulate: true
+    }]
 });
 
 partSchema.plugin(autopopulate);
@@ -58,6 +63,7 @@ function validate(part) {
         category: Joi.objectId(),
         createdBy: Joi.objectId(),
         primaryImage: Joi.objectId(),
+        images: Joi.array().items(Joi.objectId()),
     });
 
     return schema.validate(part);
@@ -73,7 +79,8 @@ function pickProperties(obj) {
             "price",
             "count",
             "category",
-            "primaryImage"
+            "primaryImage",
+            "images"
         ]);
 }
 
