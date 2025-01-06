@@ -76,10 +76,15 @@ router.put("/:id", [auth, canModifyParts, validateObjectId], async (req, res) =>
         return;
     }
 
+    const newData = pickProperties(req.body);
+    if(!newData.primaryImage) {
+        newData.primaryImage = null;
+    }
+
     const part = await Part
         .findByIdAndUpdate(
             req.params.id,
-            pickProperties(req.body),
+            newData,
             { new: true }
         );
 
