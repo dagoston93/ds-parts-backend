@@ -3,6 +3,25 @@ const Joi = require("joi");
 const lodash = require("lodash");
 const autopopulate = require("mongoose-autopopulate");
 
+const customFieldValueSchema = new mongoose.Schema({
+    numericValue: {
+        type: Number
+    },
+    stringValue: {
+        type: String,
+        trim: true,
+        maxlength: 255
+    },
+    unit: {
+        type: String,
+        trim: true,
+        maxlength: 50
+    },
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
+    }
+});
+
 const partSchema = new mongoose.Schema({
     name: { 
         type: String,
@@ -53,6 +72,11 @@ const partSchema = new mongoose.Schema({
         ref: "File",
         autopopulate: true
     }],
+    customFieldValues: {
+        type: mongoose.Schema.Types.Map,
+        of: customFieldValueSchema,
+        autopopulate: true
+    }
 });
 
 partSchema.plugin(autopopulate);
@@ -70,6 +94,16 @@ function validate(part) {
         primaryImage: Joi.objectId(),
         images: Joi.array().items(Joi.objectId()),
         files: Joi.array().items(Joi.objectId()),
+        customFieldValues: Joi.object().pattern(
+            Joi.string(),
+            Joi.object(
+                {
+                    numericValue: Joi.number(),
+                    stringValue: Joi.string().max(255),
+                    unit: Joi.string().max(50),
+                }
+            )
+        ),
     });
 
     return schema.validate(part);
@@ -88,6 +122,7 @@ function pickProperties(obj) {
             "primaryImage",
             "images",
             "files",
+            "customFieldValues",
         ]);
 }
 
