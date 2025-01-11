@@ -57,6 +57,11 @@ const partSchema = new mongoose.Schema({
         ref: "Category",
         autopopulate: { select: "name" }
     },
+    container: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Container",
+        autopopulate: { select: "name" }
+    },
     primaryImage: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Image",
@@ -90,6 +95,7 @@ function validate(part) {
         price: Joi.number().greater(0).required(),
         count: Joi.number().min(0).required(),
         category: Joi.objectId(),
+        container: Joi.objectId(),
         createdBy: Joi.objectId(),
         primaryImage: Joi.objectId(),
         images: Joi.array().items(Joi.objectId()),
@@ -119,6 +125,7 @@ function pickProperties(obj) {
             "price",
             "count",
             "category",
+            "container",
             "primaryImage",
             "images",
             "files",

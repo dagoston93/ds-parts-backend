@@ -5,6 +5,7 @@ const fileUpload = require('express-fileupload');
 const path = require("path");
 
 const parts = require("../routes/parts");
+const containers = require("../routes/containers");
 const categories = require("../routes/categories");
 const users = require("../routes/users");
 const manufacturers = require("../routes/manufacturers");
@@ -39,6 +40,7 @@ module.exports = function(app) {
     app.use(express.json());
     app.use(morganMiddleware);
     app.use("/api/parts", parts);
+    app.use("/api/containers", containers);
     app.use("/api/categories", categories);
     app.use("/api/users", users);
     app.use("/api/manufacturers", manufacturers);
