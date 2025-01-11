@@ -29,7 +29,7 @@ function validate(manufacturer) {
 }
 
 function pickProperties(obj) {
-    return lodash.pick(obj, ["name", "parent"]);
+    return lodash.pick(obj, ["name"]);
 }
 
 async function findByName(name) {

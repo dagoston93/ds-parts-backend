@@ -8,8 +8,8 @@ const { Manufacturer, validate, pickProperties, findByName } = require("../model
 const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
-    const manufacturer = await Manufacturer.find();
-    res.send(manufacturer);
+    const manufacturers = await Manufacturer.find();
+    res.send(manufacturers);
 });
 
 router.get("/:id", [auth, validateObjectId], async (req, res) => {
