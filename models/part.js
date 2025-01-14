@@ -62,6 +62,11 @@ const partSchema = new mongoose.Schema({
         ref: "Container",
         autopopulate: { select: "name" }
     },
+    description: {
+        type: String,
+        trim: true,
+        maxlength: 500
+    },
     primaryImage: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Image",
@@ -96,6 +101,7 @@ function validate(part) {
         count: Joi.number().min(0).required(),
         category: Joi.objectId(),
         container: Joi.objectId(),
+        description: Joi.string().max(500).allow(""),
         createdBy: Joi.objectId(),
         primaryImage: Joi.objectId(),
         images: Joi.array().items(Joi.objectId()),
@@ -126,6 +132,7 @@ function pickProperties(obj) {
             "count",
             "category",
             "container",
+            "description",
             "primaryImage",
             "images",
             "files",
