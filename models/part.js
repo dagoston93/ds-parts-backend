@@ -86,7 +86,12 @@ const partSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.Map,
         of: customFieldValueSchema,
         autopopulate: true
-    }
+    },
+    relatedParts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Part",
+        autopopulate: false
+    }]
 });
 
 partSchema.plugin(autopopulate);
@@ -116,6 +121,7 @@ function validate(part) {
                 }
             )
         ),
+        relatedParts: Joi.array().items(Joi.objectId())
     });
 
     return schema.validate(part);
@@ -137,6 +143,7 @@ function pickProperties(obj) {
             "images",
             "files",
             "customFieldValues",
+            "relatedParts"
         ]);
 }
 
