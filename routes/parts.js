@@ -7,6 +7,27 @@ const { exists: manufacturerExists } = require("../models/manufacturer");
 const { exists: packageExists } = require("../models/partPackage");
 const { exists: categoryExists } = require("../models/category");
 
+function isURIEncoded(uri) {
+    try {
+        return uri !== decodeURIComponent(uri);
+    } catch (e) {
+        // If decodeURIComponent throws an error, it's not properly encoded
+        return false;
+    }
+}
+
+function encodeRelatedLinks(relatedLinks) {
+    let newRelatedLinks = [...relatedLinks];
+
+    for(let i = 0; i < newRelatedLinks.length; i++) {
+        if(!isURIEncoded(newRelatedLinks[i])) {
+            newRelatedLinks[i] = encodeURIComponent(newRelatedLinks[i]);
+        }
+    }
+
+    return newRelatedLinks;
+}
+
 const router = express.Router();
 
 router.get("/", auth, async (req, res) => {
@@ -47,7 +68,12 @@ router.post("/", [auth, canModifyParts], async (req, res) => {
         return;
     }
 
-    let part = new Part(pickProperties(req.body));
+    let newData = pickProperties(req.body);
+    if(newData.relatedLinks) {
+        newData.relatedLinks = encodeRelatedLinks(newData.relatedLinks);
+    }
+
+    let part = new Part(newData);
     part.createdBy = req.user._id; 
     part = await part.save();
 
@@ -79,6 +105,10 @@ router.put("/:id", [auth, canModifyParts, validateObjectId], async (req, res) =>
     const newData = pickProperties(req.body);
     if(!newData.primaryImage) {
         newData.primaryImage = null;
+    }
+
+    if(newData.relatedLinks) {
+        newData.relatedLinks = encodeRelatedLinks(newData.relatedLinks);
     }
 
     const part = await Part
