@@ -91,7 +91,12 @@ const partSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Part",
         autopopulate: false
-    }]
+    }],
+    relatedLinks: [{
+        type: String,
+        trim: true,
+        maxlength: 1000
+    }], 
 });
 
 partSchema.plugin(autopopulate);
@@ -121,7 +126,8 @@ function validate(part) {
                 }
             )
         ),
-        relatedParts: Joi.array().items(Joi.objectId())
+        relatedParts: Joi.array().items(Joi.objectId()),
+        relatedLinks: Joi.array().items(Joi.string().max(1000)),
     });
 
     return schema.validate(part);
@@ -143,7 +149,8 @@ function pickProperties(obj) {
             "images",
             "files",
             "customFieldValues",
-            "relatedParts"
+            "relatedParts",
+            "relatedLinks",
         ]);
 }
 
